@@ -1,0 +1,83 @@
+name: integration-test
+
+on:
+  workflow_call:
+    inputs:
+      service_name:
+        required: true
+        type: string
+      branch:
+        required: true
+        type: string
+      flow_monitor_endpoint:
+        required: true
+        type: string
+    secrets:
+      git_token:
+        required: true
+
+jobs:
+  integration-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: install k3d
+        run: wget -q -O - https://raw.githubusercontent.com/rancher/k3d/main/install.sh | TAG=v5.0.0 bash
+
+      - name: install yarn
+        run: curl -o- -L https://yarnpkg.com/install.sh | bash
+
+      - name: install helm
+        uses: azure/setup-helm@v1
+        with:
+          version: latest
+
+      - name: clone fulfillment-integration repository
+        uses: actions/checkout@v2
+        with:
+          path: fulfillment-integration
+          repository: get-fabric/fulfillment-integration
+          token: ${{ secrets.git_token }}
+
+      - name: setup integration environment
+        run: cd fulfillment-integration && yarn env:setup
+
+      - name: clone repository
+        uses: actions/checkout@v2
+        with:
+          path: ${{ inputs.service_name }}
+          repository: get-fabric/${{ inputs.service_name }}
+          ref: ${{ inputs.branch }}
+          token: ${{ secrets.git_token }}
+
+      - name: build image
+        id: docker_build
+        uses: docker/build-push-action@v2
+        with:
+          context: ./${{ inputs.service_name }}
+          build-args: |
+            NPM_TOKEN=${{ secrets.git_token }}
+          tags: localhost:2100/${{ inputs.service_name }}
+          push: true
+
+      - name: generate yaml
+        run: |
+          cd ${{ inputs.service_name }}/deployment
+          helm dep update
+          helm template -f values.yaml -f values.local.yaml --name-template=${{ inputs.service_name }} --set fabric-chart.image.registry=k3d-local-registry:2100 --set fabric-chart.image.tag="latest" . > ${{ inputs.service_name }}.yaml
+
+      - name: deploy
+        run: |
+          kubectl apply -n fulfillment -f ${{ inputs.service_name }}/deployment/${{ inputs.service_name }}.yaml
+          cd fulfillment-integration
+          yarn services:wait-ready
+
+      - name: run test
+        run: |
+          kubectl -n fulfillment port-forward svc/fulfillment-flow-monitor 3478:80 &
+          sleep 5
+          echo "calling flow monitor..."
+          response=$(curl -I -s -L http://localhost:3478${{ inputs.flow_monitor_endpoint }} | grep HTTP/1.1)
+          echo "done: $response"
+          kill %1
+          sleep 5
+          if [[ "$response" == *"200"* ]]; then exit 0 ; else exit 1; fi
