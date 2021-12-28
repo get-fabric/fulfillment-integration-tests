@@ -2,7 +2,7 @@
 This repository contains a workflow that runs an isolated [fulfillment integration](https://github.com/get-fabric/fulfillment-integration) environment and calls the [flow monitor](https://github.com/get-fabric/fulfillment-flow-monitor) in order to verify sanity flow is working.
 
 ### Usage
-Every participating service updates [fulfillment-integration deployments folder](https://github.com/get-fabric/fulfillment-integration/tree/master/deployments) with its spec. The spec is generated and pushed by [update-fulfillment-integration]() step. Then in order to run the integration tests you just run the [integration-test](https://github.com/get-fabric/fulfillment-integration-tests-github-action/blob/main/.github/workflows/integration-test.yaml) step
+Every participating service updates [fulfillment-integration deployments folder](https://github.com/get-fabric/fulfillment-integration/tree/master/deployments) with its spec. The spec is generated and pushed by [update-fulfillment-integration](https://github.com/get-fabric/update-fulfillment-integration) step. Then in order to run the integration tests you just run the [integration-test](https://github.com/get-fabric/fulfillment-integration-tests-github-action/blob/main/.github/workflows/integration-test.yaml) step
 
 1. Add `update-fulfillment-integration` step into your service `deploy.yaml` workflow:
 ```
