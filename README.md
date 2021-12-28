@@ -24,7 +24,7 @@ Every participating service updates [fulfillment-integration deployments folder]
     with:
       service_name: ${{ github.event.repository.name }}
       branch: ${{ github.branch }}
-      flow_monitor_endpoint: /healthcheck
+      flow_monitor_endpoint: /flows/sanity
     secrets:
       git_token: ${{ secrets.ORG_GITHUB_ADMIN_TOKEN }}
       gcloud_token: ${{ secrets.FULFILLMENMT_INTEGRATION_GCLOUD_SERVICE_ACCOUNT }}     
