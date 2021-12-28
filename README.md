@@ -1,6 +1,5 @@
 ## Fulfillment Integration Tests
 This repository contains a workflow that runs an [isolated fulfillment environment](https://github.com/get-fabric/fulfillment-integration) and calls the [flow monitor](https://github.com/get-fabric/fulfillment-flow-monitor) in order to verify sanity flow is working.
-The repository also includes a workflow that adds service to be a participant in `fulfillment-integration` and therefore a participant in the integration test
 
 ### Usage
 Every participating service updates [fulfillment-integration deployments folder](https://github.com/get-fabric/fulfillment-integration/tree/master/deployments) with its spec. The spec is generated and pushed by [update-fulfillment-integration]() step. Then in order to run the integration tests you just run the [integration-test](https://github.com/get-fabric/fulfillment-integration-tests-github-action/blob/main/.github/workflows/integration-test.yaml) step
@@ -13,6 +12,7 @@ Every participating service updates [fulfillment-integration deployments folder]
     uses: get-fabric/helm-template-and-push-action/.github/workflows/helm-template-and-push.yml@main
     with:
       service_name: ${{ github.event.repository.name }}
+      commit_message: 'updated ${{ github.event.repository.name }} with image ${{ needs.update-image.outputs.tag }}'
     secrets:
       git_token: ${{ secrets.ORG_GITHUB_ADMIN_TOKEN }}      
 ```
@@ -24,7 +24,8 @@ Every participating service updates [fulfillment-integration deployments folder]
     with:
       service_name: ${{ github.event.repository.name }}
       branch: ${{ github.branch }}
-      flow_monitor_endpoint: /flows/sanity
+      flow_monitor_endpoint: /healthcheck
     secrets:
-      git_token: ${{ secrets.ORG_GITHUB_ADMIN_TOKEN }}      
+      git_token: ${{ secrets.ORG_GITHUB_ADMIN_TOKEN }}
+      gcloud_token: ${{ secrets.FULFILLMENMT_INTEGRATION_GCLOUD_SERVICE_ACCOUNT }}     
 ```
