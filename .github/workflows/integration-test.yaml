@@ -31,6 +31,14 @@ jobs:
         with:
           version: latest
 
+      - name: 'authenticate to gcloud'
+        uses: 'google-github-actions/auth@v0'
+        with:
+          credentials_json: '${{ secrets.GCLOUD_SERVICE_ACCOUNT }}'
+
+      - name: set up gcloud sdk
+        uses: google-github-actions/setup-gcloud@v0.3.0
+
       - name: clone fulfillment-integration repository
         uses: actions/checkout@v2
         with:
