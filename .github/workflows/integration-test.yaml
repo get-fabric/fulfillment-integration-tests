@@ -49,7 +49,7 @@ jobs:
           token: ${{ secrets.git_token }}
 
       - name: setup integration environment
-        run: cd fulfillment-integration && yarn env:setup
+        run: cd fulfillment-integration && yarn integration:setup
 
       - name: clone repository
         uses: actions/checkout@v2
