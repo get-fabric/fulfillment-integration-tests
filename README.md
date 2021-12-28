@@ -29,3 +29,5 @@ Every participating service updates [fulfillment-integration deployments folder]
       git_token: ${{ secrets.ORG_GITHUB_ADMIN_TOKEN }}
       gcloud_token: ${{ secrets.FULFILLMENMT_INTEGRATION_GCLOUD_SERVICE_ACCOUNT }}     
 ```
+
+Full example `deploy.yaml` can be found in the [worker-template](https://github.com/get-fabric/worker-template/blob/main/.github/workflows/deploy.yml)
