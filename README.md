@@ -4,7 +4,7 @@ This repository contains a workflow that runs an isolated [fulfillment integrati
 ### Usage
 Every participating service updates [fulfillment-integration deployments folder](https://github.com/get-fabric/fulfillment-integration/tree/master/deployments) with its spec. The spec is generated and pushed by [update-fulfillment-integration](https://github.com/get-fabric/update-fulfillment-integration) step. Then in order to run the integration tests you just run the [integration-test](https://github.com/get-fabric/fulfillment-integration-tests-github-action/blob/main/.github/workflows/integration-test.yaml) workflow
 
-1. Add `update-fulfillment-integration` step into your service `deploy.yaml` workflow:
+1. Copy this `update-fulfillment-integration` step into your service `deploy.yaml` workflow:
 ```
   update-fulfillment-integration:
     needs:
@@ -17,7 +17,7 @@ Every participating service updates [fulfillment-integration deployments folder]
       git_token: ${{ secrets.ORG_GITHUB_ADMIN_TOKEN }}      
 ```
 
-2. Add `integration-test` step into your service `tests.yaml` workflow:
+2. Copy this `integration-test` step into your service `tests.yaml` workflow:
 ```
   integration-test:
     uses: get-fabric/fulfillment-integration-tests-github-action/.github/workflows/integration-test.yaml@main
