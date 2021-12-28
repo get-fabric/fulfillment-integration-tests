@@ -9,7 +9,7 @@ Every participating service updates [fulfillment-integration deployments folder]
   update-fulfillment-integration:
     needs:
       - update-image
-    uses: get-fabric/helm-template-and-push-action/.github/workflows/helm-template-and-push.yml@main
+    uses: get-fabric/update-fulfillment-integration/.github/workflows/update-fulfillment-integration.yml@main
     with:
       service_name: ${{ github.event.repository.name }}
       commit_message: 'updated ${{ github.event.repository.name }} with image ${{ needs.update-image.outputs.tag }}'
