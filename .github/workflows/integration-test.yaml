@@ -6,12 +6,16 @@ on:
       service_name:
         required: true
         type: string
+      namespace:
+        required: true
+        default: fulfillment
+        type: string
       branch:
         required: true
         type: string
       test_runner_service_name:
         required: true
-        type: string        
+        type: string
       test_runner_endpoint:
         required: true
         type: string
@@ -80,7 +84,7 @@ jobs:
 
       - name: deploy
         run: |
-          kubectl apply -n fulfillment -f ${{ inputs.service_name }}/deployment/${{ inputs.service_name }}.yaml
+          kubectl apply -n ${{ inputs.namespace }} -f ${{ inputs.service_name }}/deployment/${{ inputs.service_name }}.yaml
           cd fulfillment-integration
           yarn services:wait-ready
 
