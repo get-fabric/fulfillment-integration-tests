@@ -24,7 +24,7 @@ Every participating service updates [fulfillment-integration](https://github.com
     with:
       service_name: ${{ github.event.repository.name }}
       branch: ${{ github.branch }}
-      test_runner_service_name: /fulfillment-flow-monitor      
+      test_runner_service_name: fulfillment-flow-monitor      
       test_runner_endpoint: /healthcheck
     secrets:
       git_token: ${{ secrets.ORG_GITHUB_ADMIN_TOKEN }}
