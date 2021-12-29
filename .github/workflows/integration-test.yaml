@@ -82,14 +82,14 @@ jobs:
           helm dep update
           helm template -f values.yaml -f values.integration.yaml --name-template=${{ inputs.service_name }} --set fabric-chart.image.registry=k3d-local-registry:2100 --set fabric-chart.image.tag="latest" . > ${{ inputs.service_name }}.yaml
 
+      - name: ssh debug breakpoint
+        uses: lhotari/action-upterm@v1
+
       - name: deploy
         run: |
           kubectl apply -n ${{ inputs.namespace }} -f ${{ inputs.service_name }}/deployment/${{ inputs.service_name }}.yaml
           cd fulfillment-integration
           yarn services:wait-ready
-
-      - name: ssh debug breakpoint
-        uses: lhotari/action-upterm@v1
 
       - name: run test
         run: |
