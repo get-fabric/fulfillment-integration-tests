@@ -29,9 +29,6 @@ jobs:
   integration-test:
     runs-on: ubuntu-latest
     steps:
-      - name: setup upterm session
-        uses: lhotari/action-upterm@v1
-
       - name: install k3d
         run: wget -q -O - https://raw.githubusercontent.com/rancher/k3d/main/install.sh | TAG=v5.0.0 bash
 
@@ -90,6 +87,9 @@ jobs:
           kubectl apply -n ${{ inputs.namespace }} -f ${{ inputs.service_name }}/deployment/${{ inputs.service_name }}.yaml
           cd fulfillment-integration
           yarn services:wait-ready
+
+      - name: ssh debug breakpoint
+        uses: lhotari/action-upterm@v1
 
       - name: run test
         run: |
