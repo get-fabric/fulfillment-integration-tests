@@ -24,10 +24,11 @@ Every participating service updates [fulfillment-integration](https://github.com
     with:
       service_name: ${{ github.event.repository.name }}
       branch: ${{ github.branch }}
-      flow_monitor_endpoint: /flows/sanity
+      test_runner_service_name: /fulfillment-flow-monitor      
+      test_runner_endpoint: /healthcheck
     secrets:
       git_token: ${{ secrets.ORG_GITHUB_ADMIN_TOKEN }}
-      gcloud_token: ${{ secrets.FULFILLMENMT_INTEGRATION_GCLOUD_SERVICE_ACCOUNT }}     
+      gcloud_token: ${{ secrets.FULFILLMENMT_INTEGRATION_GCLOUD_SERVICE_ACCOUNT }}    
 ```
 
 Full example of `deploy.yaml` can be found in the [worker-template](https://github.com/get-fabric/worker-template/blob/main/.github/workflows/deploy.yml)
