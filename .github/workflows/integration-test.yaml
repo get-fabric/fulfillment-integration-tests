@@ -9,7 +9,7 @@ on:
       branch:
         required: true
         type: string
-      flow_monitor_endpoint:
+      test_runner_endpoint:
         required: true
         type: string
     secrets:
@@ -86,7 +86,7 @@ jobs:
           kubectl -n fulfillment port-forward svc/fulfillment-flow-monitor 3478:80 &
           sleep 5
           echo "calling flow monitor..."
-          response=$(curl -I -s -L http://localhost:3478${{ inputs.flow_monitor_endpoint }} | grep HTTP/1.1)
+          response=$(curl -I -s -L http://localhost:3478${{ inputs.test_runner_endpoint }} | grep HTTP/1.1)
           echo "done: $response"
           kill %1
           sleep 5
