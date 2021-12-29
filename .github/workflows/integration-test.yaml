@@ -92,7 +92,7 @@ jobs:
         run: |
           kubectl -n fulfillment port-forward svc/${{ inputs.test_runner_service_name }} 3478:80 &
           sleep 5
-          echo "calling flow monitor..."
+          echo "calling test runner..."
           response=$(curl -I -s -L http://localhost:3478${{ inputs.test_runner_endpoint }} | grep HTTP/1.1)
           echo "done: $response"
           kill %1
