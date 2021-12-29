@@ -7,7 +7,7 @@ on:
         required: true
         type: string
       namespace:
-        required: true
+        required: false
         default: fulfillment
         type: string
       branch:
