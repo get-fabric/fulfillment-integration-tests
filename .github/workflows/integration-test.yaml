@@ -86,7 +86,7 @@ jobs:
         run: |
           kubectl apply -n ${{ inputs.namespace }} -f ${{ inputs.service_name }}/deployment/${{ inputs.service_name }}.yaml
           cd fulfillment-integration
-          yarn services:wait-ready
+          yarn cluster:wait-ready
 
       - name: run test
         run: |
