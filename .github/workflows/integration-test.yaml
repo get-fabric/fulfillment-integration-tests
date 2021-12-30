@@ -80,7 +80,7 @@ jobs:
         run: |
           cd ${{ inputs.service_name }}/deployment
           helm dep update
-          helm template -f values.yaml -f values.integration.yaml --name-template=${{ inputs.service_name }} --set fabric-chart.image.registry=k3d-local-registry:2100 --set fabric-chart.image.tag="latest" . > ${{ inputs.service_name }}.yaml
+          helm template -f values.yaml -f values.integration.yaml --name-template=${{ inputs.service_name }} --set fabric-chart.image.registry=k3d-local-registry:2100 --set fabric-chart.image.tag="latest" --set fabric-chart.image.pullPolicy="Always" . > ${{ inputs.service_name }}.yaml
 
       - name: deploy
         run: |
