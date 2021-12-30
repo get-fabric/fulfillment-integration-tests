@@ -68,6 +68,10 @@ jobs:
           
       - name: set up docker buildx
         uses: docker/setup-buildx-action@v1
+        with:
+          config-inline: |
+            [registry."localhost:2100"]
+              mirrors = ["local-registry"]
                   
       - name: cache docker layers
         uses: actions/cache@v2
