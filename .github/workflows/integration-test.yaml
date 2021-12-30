@@ -65,6 +65,9 @@ jobs:
           repository: get-fabric/${{ inputs.service_name }}
           ref: ${{ inputs.branch }}
           token: ${{ secrets.git_token }}
+          
+      - name: set up docker buildx
+        uses: docker/setup-buildx-action@v1
                   
       - name: cache docker layers
         uses: actions/cache@v2
