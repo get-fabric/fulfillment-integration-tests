@@ -1,5 +1,5 @@
 kubectl delete -n job-management -f ./deployments/job-management/station-api.yaml
-kubectl delete -n fulfillment -f ./deployments/fulfillment/delete-mode-change.yaml
+kubectl delete -n fulfillment -f ./deployments/fulfillment/apply-mode-change.yaml
 kubectl delete -n fulfillment -f ./deployments/fulfillment/insert-totes-allocator.yaml
 kubectl delete -n fulfillment -f ./deployments/fulfillment/allocation-api.yaml
 kubectl delete -n fulfillment -f ./deployments/fulfillment/request-totes.yaml
