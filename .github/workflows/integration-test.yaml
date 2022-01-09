@@ -34,6 +34,7 @@ on:
 jobs:
   build-image:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
     - name: gcr login
       uses: docker/login-action@v1
@@ -68,6 +69,7 @@ jobs:
 
   run-test:
     runs-on: [self-hosted,fullfilment-integration-tests]
+    timeout-minutes: 10
     steps:
       - name: mark start time
         id: start_time
@@ -106,6 +108,7 @@ jobs:
           checkName: integration-test / build-image
           intervalSeconds: 1
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          timeoutSeconds: 120
 
       - name: clone repository
         uses: actions/checkout@v2
