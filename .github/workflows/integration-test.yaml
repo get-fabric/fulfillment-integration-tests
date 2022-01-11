@@ -71,6 +71,12 @@ jobs:
     runs-on: [self-hosted,fullfilment-integration-tests]
     timeout-minutes: 10
     steps:
+      - name: enable ssh
+        uses: touch continue
+
+      - name: enable ssh
+        uses: lhotari/action-upterm@v1
+
       - name: mark start time
         id: start_time
         run: echo "::set-output name=time::$(date +%s)"
