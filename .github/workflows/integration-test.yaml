@@ -134,12 +134,6 @@ jobs:
         working-directory: fulfillment-integration-tests
         run: bash ./test.sh ${{ inputs.test_runner_service_name }} ${{ inputs.test_runner_endpoint }}
 
-      - name: delete services
-        if: always()
-        working-directory: fulfillment-integration
-        run: |
-          bash ../fulfillment-integration-tests/delete_services.sh
-
       - name: write logs
         if: always()
         working-directory: fulfillment-integration
@@ -158,6 +152,12 @@ jobs:
           name: logs
           path: ./fulfillment-integration/logs
           retention-days: 7
+
+      - name: delete services
+        if: always()
+        working-directory: fulfillment-integration
+        run: |
+          bash ../fulfillment-integration-tests/delete_services.sh
 
       - name: report failure
         if: failure()
