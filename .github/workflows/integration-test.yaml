@@ -141,6 +141,7 @@ jobs:
           bash ../fulfillment-integration-tests/delete_services.sh
 
       - name: write logs
+        if: always()
         working-directory: fulfillment-integration
         run: |
           sh ./extract_logs.sh fulfillment folder
