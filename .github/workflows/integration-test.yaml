@@ -156,8 +156,7 @@ jobs:
       - name: delete services
         if: always()
         working-directory: fulfillment-integration
-        run: |
-          bash ../fulfillment-integration-tests/delete_services.sh
+        run: bash ../fulfillment-integration-tests/delete_services.sh || true
 
       - name: report failure
         if: failure()
