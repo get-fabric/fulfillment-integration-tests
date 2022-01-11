@@ -97,7 +97,7 @@ jobs:
       - name: deploy services
         working-directory: fulfillment-integration
         run: |
-          bash ./manage_services.sh deployments apply
+          bash ../fulfillment-integration-tests/deploy_services.sh
           bash ./wait_for_pods_ready.sh 5
 
       - name: wait for build image to succeed
@@ -156,7 +156,8 @@ jobs:
       - name: delete services
         if: always()
         working-directory: fulfillment-integration
-        run: bash ./manage_services.sh deployments delete
+        run: |
+          bash ../fulfillment-integration-tests/delete_services.sh
 
       - name: report failure
         if: failure()
