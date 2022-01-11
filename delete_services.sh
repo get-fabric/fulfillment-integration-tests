@@ -1,13 +1,4 @@
 kubectl delete -n default -f ./deployments/default/mongo.yaml
 kubectl delete -n default -f ./deployments/default/kafka.yaml
-kubectl delete -n job-management -f ./deployments/job-management/station-api.yaml
-kubectl delete -n fulfillment -f ./deployments/fulfillment/apply-mode-change.yaml
-kubectl delete -n fulfillment -f ./deployments/fulfillment/insert-totes-allocator.yaml
-kubectl delete -n fulfillment -f ./deployments/fulfillment/allocation-api.yaml
-kubectl delete -n fulfillment -f ./deployments/fulfillment/request-totes.yaml
-kubectl delete -n fulfillment -f ./deployments/fulfillment/motion-api.yaml
-kubectl delete -n fulfillment -f ./deployments/fulfillment/motion-mock.yaml
-kubectl delete -n fulfillment -f ./deployments/fulfillment/insert-totes.yaml
-kubectl delete -n fulfillment -f ./deployments/fulfillment/reply-mock.yaml
-kubectl delete -n fulfillment -f ./deployments/fulfillment/wms-api.yaml
-kubectl delete -n fulfillment -f ./deployments/fulfillment/integration-test-runner.yaml
+kubectl delete -n job-management -f ./deployments/job-management
+kubectl delete -n fulfillment -f ./deployments/fulfillment
