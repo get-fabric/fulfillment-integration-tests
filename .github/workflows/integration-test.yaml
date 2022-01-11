@@ -72,7 +72,7 @@ jobs:
     timeout-minutes: 10
     steps:
       - name: enable ssh
-        uses: touch continue
+        run: touch continue
 
       - name: enable ssh
         uses: lhotari/action-upterm@v1
