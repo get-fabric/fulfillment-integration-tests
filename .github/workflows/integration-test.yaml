@@ -158,6 +158,7 @@ jobs:
         working-directory: fulfillment-integration
         run: |
           bash ../fulfillment-integration-tests/delete_services.sh || true
+          sleep 10
           bash ./wait_for_pods_ready.sh 5
 
       - name: report failure
