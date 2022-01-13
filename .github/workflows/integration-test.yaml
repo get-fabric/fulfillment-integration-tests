@@ -128,7 +128,7 @@ jobs:
         run: |
           kubectl apply -n ${{ inputs.namespace }} -f ${{ inputs.service_name }}/deployment/${{ inputs.service_name }}.yaml
           cd fulfillment-integration
-          bash ./wait_for_pods_ready.sh
+          bash ./wait_for_pods_ready.sh 5
 
       - name: run test
         working-directory: fulfillment-integration-tests
@@ -156,7 +156,10 @@ jobs:
       - name: delete services
         if: always()
         working-directory: fulfillment-integration
-        run: bash ../fulfillment-integration-tests/delete_services.sh || true
+        run: |
+          bash ../fulfillment-integration-tests/delete_services.sh || true
+          bash sleep 10
+          bash ./wait_for_pods_ready.sh 5
 
       - name: report failure
         if: failure()
