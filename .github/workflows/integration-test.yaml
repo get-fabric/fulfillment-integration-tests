@@ -138,12 +138,12 @@ jobs:
         if: always()
         working-directory: fulfillment-integration
         run: |
-          sh ./extract_logs.sh fulfillment folder
-          sh ./extract_logs.sh job-management folder
-          sh ./extract_logs.sh default folder
-          sh ./extract_logs.sh fulfillment file
-          sh ./extract_logs.sh job-management file
-          sh ./extract_logs.sh default file
+          sh ./extract_logs.sh fulfillment folder || true
+          sh ./extract_logs.sh job-management folder || true
+          sh ./extract_logs.sh default folder || true
+          sh ./extract_logs.sh fulfillment file || true
+          sh ./extract_logs.sh job-management file || true
+          sh ./extract_logs.sh default file || true
 
       - name: write log artifacts
         uses: actions/upload-artifact@v2
@@ -156,10 +156,7 @@ jobs:
       - name: delete services
         if: always()
         working-directory: fulfillment-integration
-        run: |
-          bash ./manage_services.sh deployments delete || true
-          sleep 10
-          bash ./wait_for_pods_ready.sh 5
+        run: bash ./manage_services.sh deployments delete || true
 
       - name: report failure
         if: failure()
