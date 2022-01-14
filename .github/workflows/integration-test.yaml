@@ -129,7 +129,7 @@ jobs:
 
       - name: deploy
         run: |
-          kubectl apply -n ${{ inputs.namespace }} -f ${{ inputs.service_name }}/deployment/${{ inputs.service_name }}.yaml
+          kubectl apply -n ${{ inputs.namespace }} -f ${{ inputs.service_name }}/services/${{ inputs.service_name }}.yaml
           cd fulfillment-integration
           bash ./wait_for_pods_ready.sh 5
 
@@ -160,7 +160,7 @@ jobs:
         if: always()
         working-directory: fulfillment-integration
         run: |
-           kubectl delete -n ${{ inputs.namespace }} -f ${{ inputs.service_name }}/deployment/${{ inputs.service_name }}.yaml
+           kubectl delete -n ${{ inputs.namespace }} -f ${{ inputs.service_name }}/services/${{ inputs.service_name }}.yaml
            kubectl -n default delete -f ./default/mongo.yaml
 
       - name: report failure
