@@ -127,6 +127,7 @@ jobs:
 
       - name: deploy
         run: |
+          kubectl delete -n ${{ inputs.namespace }} -f ${{ inputs.service_name }}/deployment/${{ inputs.service_name }}.yaml --grace-period=0 --force
           kubectl apply -n ${{ inputs.namespace }} -f ${{ inputs.service_name }}/deployment/${{ inputs.service_name }}.yaml
           bash ./fulfillment-integration/wait_for_pods_ready.sh 5
 
