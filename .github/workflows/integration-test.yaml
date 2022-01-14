@@ -95,6 +95,12 @@ jobs:
           repository: get-fabric/fulfillment-integration-tests
           token: ${{ secrets.git_token }}
 
+      - name: deploy infrastructure
+        working-directory: fulfillment-integration
+        run: |
+          bash ./manage_services.sh infrastructure apply
+          bash ./wait_for_pods_ready.sh 5
+
       - name: deploy services
         working-directory: fulfillment-integration
         run: |
