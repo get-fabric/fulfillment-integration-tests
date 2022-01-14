@@ -156,12 +156,12 @@ jobs:
           path: ./fulfillment-integration/logs
           retention-days: 7
 
-      - name: delete services
+      - name: cleanup
         if: always()
         working-directory: fulfillment-integration
         run: |
-           bash ./manage_services.sh services delete || true
-           kubectl -n default delete -f defaut/mongo.yaml
+           kubectl delete -n ${{ inputs.namespace }} -f ${{ inputs.service_name }}/deployment/${{ inputs.service_name }}.yaml
+           kubectl -n default delete -f ./default/mongo.yaml
 
       - name: report failure
         if: failure()
