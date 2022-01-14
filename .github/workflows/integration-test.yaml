@@ -97,7 +97,7 @@ jobs:
       - name: deploy services
         working-directory: fulfillment-integration
         run: |
-          bash ./manage_services.sh deloyments apply
+          bash ./manage_services.sh deployments apply
           bash ./wait_for_pods_ready.sh 5
 
       - name: wait for build image to succeed
