@@ -160,9 +160,8 @@ jobs:
         if: always()
         working-directory: fulfillment-integration
         run: |
-          - bash ./manage_services.sh services delete || true
-          - bash ./manage_services.sh infrastructure delete || true
-
+           bash ./manage_services.sh services delete || true
+           bash ./manage_services.sh infrastructure delete || true
 
       - name: report failure
         if: failure()
