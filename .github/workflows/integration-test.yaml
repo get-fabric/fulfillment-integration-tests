@@ -95,15 +95,11 @@ jobs:
           repository: get-fabric/fulfillment-integration-tests
           token: ${{ secrets.git_token }}
 
-      - name: deploy infrastructure
+      - name: deploy services
         working-directory: fulfillment-integration
         run: |
           bash ./manage_services.sh infrastructure apply
           bash ./wait_for_pods_ready.sh 5
-
-      - name: deploy services
-        working-directory: fulfillment-integration
-        run: |
           bash ./manage_services.sh services apply
           bash ./wait_for_pods_ready.sh 5
 
@@ -163,7 +159,10 @@ jobs:
       - name: delete services
         if: always()
         working-directory: fulfillment-integration
-        run: bash ./manage_services.sh deployments delete || true
+        run: |
+          - bash ./manage_services.sh services delete || true
+          - bash ./manage_services.sh infrastructure delete || true
+
 
       - name: report failure
         if: failure()
