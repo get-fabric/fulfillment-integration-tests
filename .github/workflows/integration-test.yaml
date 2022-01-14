@@ -161,7 +161,7 @@ jobs:
         working-directory: fulfillment-integration
         run: |
            bash ./manage_services.sh services delete || true
-           kubectl -n default delete default/mongo.yaml
+           kubectl -n default delete -f defaut/mongo.yaml
 
       - name: report failure
         if: failure()
