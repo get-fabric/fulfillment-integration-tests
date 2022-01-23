@@ -139,12 +139,9 @@ jobs:
         if: always()
         working-directory: fulfillment-integration
         run: |
-          sh ./extract_logs.sh fulfillment folder || true
-          sh ./extract_logs.sh job-management folder || true
-          sh ./extract_logs.sh default folder || true
-          sh ./extract_logs.sh fulfillment file || true
-          sh ./extract_logs.sh job-management file || true
-          sh ./extract_logs.sh default file || true
+          sh ./extract_logs.sh fulfillment 2m || true
+          sh ./extract_logs.sh job-management 2m || true
+          sh ./extract_logs.sh default 2m || true
 
       - name: write log artifacts
         uses: actions/upload-artifact@v2
