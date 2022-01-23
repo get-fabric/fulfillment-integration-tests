@@ -126,7 +126,7 @@ jobs:
 
       - name: deploy
         run: |
-          kubectl delete -n ${{ inputs.namespace }} -f ${{ inputs.service_name }}/deployment/${{ inputs.service_name }}.yaml --grace-period=0 --force || true
+          (kubectl delete -n ${{ inputs.namespace }} -f ${{ inputs.service_name }}/deployment/${{ inputs.service_name }}.yaml --grace-period=0 --force) || true
           sleep 5
           kubectl apply -n ${{ inputs.namespace }} -f ${{ inputs.service_name }}/deployment/${{ inputs.service_name }}.yaml
           sleep 15
@@ -140,7 +140,8 @@ jobs:
         if: always()
         working-directory: fulfillment-integration
         run: |
-          sh ./extract_logs.sh fulfillment 2m || true
+          sh ./extract_logs.sh fulfillment 2m 
+          
           sh ./extract_logs.sh job-management 2m || true
           sh ./extract_logs.sh default 2m || true
 
