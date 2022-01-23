@@ -97,7 +97,7 @@ jobs:
       - name: deploy services
         working-directory: fulfillment-integration
         run: |
-          bash ../fulfillment-integration-tests/deploy_services.sh
+          bash ./manage_services.sh deployments apply
           bash ./wait_for_pods_ready.sh 5
 
       - name: wait for build image to succeed
@@ -126,9 +126,10 @@ jobs:
 
       - name: deploy
         run: |
+          kubectl delete -n ${{ inputs.namespace }} -f ${{ inputs.service_name }}/deployment/${{ inputs.service_name }}.yaml --grace-period=0 --force || true
+          sleep 5
           kubectl apply -n ${{ inputs.namespace }} -f ${{ inputs.service_name }}/deployment/${{ inputs.service_name }}.yaml
-          cd fulfillment-integration
-          bash ./wait_for_pods_ready.sh 5
+          bash ./fulfillment-integration/wait_for_pods_ready.sh 5
 
       - name: run test
         working-directory: fulfillment-integration-tests
@@ -138,12 +139,9 @@ jobs:
         if: always()
         working-directory: fulfillment-integration
         run: |
-          sh ./extract_logs.sh fulfillment folder
-          sh ./extract_logs.sh job-management folder
-          sh ./extract_logs.sh default folder
-          sh ./extract_logs.sh fulfillment file
-          sh ./extract_logs.sh job-management file
-          sh ./extract_logs.sh default file
+          sh ./extract_logs.sh fulfillment 2m || true
+          sh ./extract_logs.sh job-management 2m || true
+          sh ./extract_logs.sh default 2m || true
 
       - name: write log artifacts
         uses: actions/upload-artifact@v2
@@ -153,13 +151,11 @@ jobs:
           path: ./fulfillment-integration/logs
           retention-days: 7
 
-      - name: delete services
+      - name: cleanup
         if: always()
-        working-directory: fulfillment-integration
         run: |
-          bash ../fulfillment-integration-tests/delete_services.sh || true
-          sleep 10
-          bash ./wait_for_pods_ready.sh 5
+          kubectl delete -n ${{ inputs.namespace }} -f ${{ inputs.service_name }}/deployment/${{ inputs.service_name }}.yaml
+          kubectl delete pv/mongo-pv
 
       - name: report failure
         if: failure()
