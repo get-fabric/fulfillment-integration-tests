@@ -127,9 +127,9 @@ jobs:
       - name: deploy
         run: |
           (kubectl delete -n ${{ inputs.namespace }} -f ${{ inputs.service_name }}/deployment/${{ inputs.service_name }}.yaml --grace-period=0 --force) || true
-          sleep 5
+          until kubectl -n ${{ inputs.namespace }} get deployment ${{ inputs.service_name }} 2>&1 >/dev/null; do sleep 10; done
           kubectl apply -n ${{ inputs.namespace }} -f ${{ inputs.service_name }}/deployment/${{ inputs.service_name }}.yaml
-          sleep 15
+          sleep 5
           bash ./fulfillment-integration/wait_for_pods_ready.sh 5
 
       - name: run test
