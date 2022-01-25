@@ -139,7 +139,7 @@ jobs:
         if: always()
         working-directory: fulfillment-integration
         run: |
-          sh ./extract_logs.sh fulfillment 2m
+          sh ./extract_logs.sh fulfillment 2m || true
           sh ./extract_logs.sh job-management 2m || true
           sh ./extract_logs.sh default 2m || true
 
