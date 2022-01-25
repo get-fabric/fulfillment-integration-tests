@@ -154,7 +154,7 @@ jobs:
       - name: cleanup
         if: always()
         run: |
-          kubectl delete -n ${{ inputs.namespace }} -f ${{ inputs.service_name }}/deployment/${{ inputs.service_name }}.yaml
+          kubectl delete -n ${{ inputs.namespace }} -f ${{ inputs.service_name }}/deployment/${{ inputs.service_name }}.yaml --grace-period=0 --force=true --all=true
           kubectl delete pv/mongo-pv
 
       - name: report failure
