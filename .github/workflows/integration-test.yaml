@@ -125,9 +125,8 @@ jobs:
           helm template -f values.yaml -f values.integration.yaml --name-template=${{ inputs.service_name }} --set fabric-chart.image.tag="${{ github.event.pull_request.head.sha || github.sha }}" --set fabric-chart.image.pullPolicy="Always" . > ${{ inputs.service_name }}.yaml
 
       - name: deploy
-        run: |
-          (kubectl delete -n ${{ inputs.namespace }} -f ${{ inputs.service_name }}/deployment/${{ inputs.service_name }}.yaml --grace-period=0 --force) || true
-          until kubectl -n ${{ inputs.namespace }} get deployment ${{ inputs.service_name }} 2>&1 >/dev/null; do sleep 10; done
+        run: |        
+          kubectl delete -n ${{ inputs.namespace }} -f ${{ inputs.service_name }}/deployment/${{ inputs.service_name }}.yaml --grace-period=0 --force --all=true
           kubectl apply -n ${{ inputs.namespace }} -f ${{ inputs.service_name }}/deployment/${{ inputs.service_name }}.yaml
           sleep 5
           bash ./fulfillment-integration/wait_for_pods_ready.sh 5
