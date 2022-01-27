@@ -3,7 +3,7 @@ test_runner_endpoint=$2
 
 pod_name=$(kubectl -n fulfillment get pods --no-headers -o custom-columns=":metadata.name" | grep $test_runner_service_name)
 
-kubectl -n fulfillment port-forward $pod_name 3478:80 &
+kubectl -n fulfillment port-forward $pod_name 3478:3000 &
 sleep 10
 
 echo "calling test runner $test_runner_endpoint endpoint..."
