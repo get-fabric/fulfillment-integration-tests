@@ -165,7 +165,7 @@ jobs:
           message: |
             integration tests failed
           color: red
-          channel: fulfillment-integration-tests
+          channel: fulfillment-integration-tests-monitoring
           verbose: true
 
       - name: calculate exeuction time
@@ -186,5 +186,5 @@ jobs:
           message: |
             integration tests completed successfully within ${{ steps.exexution_time.outputs.time }} minutes
           color: green
-          channel: fulfillment-integration-tests
+          channel: fulfillment-integration-tests-monitoring
           verbose: true
