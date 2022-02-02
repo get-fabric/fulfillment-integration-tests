@@ -5,7 +5,7 @@ kubectl -n fulfillment port-forward svc/$test_runner_service_name 3478:80 &
 sleep 10
 
 echo "calling test runner $test_runner_endpoint endpoint..."
-status_code=$(curl --max-time 120 --verbose -LI http://localhost:3478$test_runner_endpoint -o /dev/null -w '%{http_code}\n' -s)
+status_code=$(curl --max-time 120 --verbose -LI http://localhost:3478$test_runner_endpoint?mfcId=integration-tests -o /dev/null -w '%{http_code}\n' -s)
 echo "test runner result: $status_code"
 
 if [[ "$status_code" == "200" ]]
