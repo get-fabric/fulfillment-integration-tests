@@ -67,7 +67,7 @@ jobs:
         cache-from: type=gha, scope=${{ github.workflow }}
         cache-to: type=gha, scope=${{ github.workflow }}
 
-  run-test:
+  sanity:
     runs-on: [self-hosted,fullfilment-integration-tests]
     timeout-minutes: 10
     steps:
