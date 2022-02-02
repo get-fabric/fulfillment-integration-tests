@@ -158,7 +158,7 @@ jobs:
           kubectl delete pv/mongo-pv
 
       - name: report failure
-        if: failure()
+        if: failure() || cancelled()
         uses: actions-ecosystem/action-slack-notifier@v1
         with:
           slack_token: ${{ secrets.slack_token }}
