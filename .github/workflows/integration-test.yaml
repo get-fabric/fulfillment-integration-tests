@@ -19,7 +19,7 @@ on:
         type: string
       test_runner_endpoint:
         required: false
-        default: /sanity
+        default: sanity
         type: string
     secrets:
       git_token:
@@ -80,11 +80,19 @@ jobs:
         with:
           version: latest
 
+      - name: install node
+        run: |
+          sudo apt update -y
+          sudo apt install nodejs -y
+          node -v
+
       - name: clone fulfillment-integration repository
         uses: actions/checkout@v2
         with:
           path: fulfillment-integration
           repository: get-fabric/fulfillment-integration
+          fetch-depth: 0
+          ref: main
           token: ${{ secrets.git_token }}
 
       - name: clone fulfillment-integration-tests repository
@@ -93,6 +101,10 @@ jobs:
           path: fulfillment-integration-tests
           repository: get-fabric/fulfillment-integration-tests
           token: ${{ secrets.git_token }}
+
+      - name: prepare cluster
+        working-directory: fulfillment-integration-tests
+        run: bash ./prepare/run.sh ../fulfillment-integration/deployments
 
       - name: deploy services
         working-directory: fulfillment-integration
@@ -154,11 +166,12 @@ jobs:
       - name: cleanup
         if: always()
         run: |
-          kubectl delete -n ${{ inputs.namespace }} -f ${{ inputs.service_name }}/deployment/${{ inputs.service_name }}.yaml --grace-period=0 --force=true --all=true
+          kubectl delete -n ${{ inputs.namespace }} -f ${{ inputs.service_name }}/deployment/${{ inputs.service_name }}.yaml --grace-period=0 --all=true
           kubectl delete pv/mongo-pv
 
       - name: calculate exeuction time
         id: exexution_time
+        if: always()
         run: |
           startTime=${{ steps.start_time.outputs.time }}
           currentTime=$(date +%s)
@@ -173,18 +186,18 @@ jobs:
         with:
           slack_token: ${{ secrets.slack_token }}
           message: |
-            integration tests were cancelled after ${{ steps.exexution_time.outputs.time }} minutes
+            ${{ inputs.test_runner_endpoint }} integration test was cancelled after ${{ steps.exexution_time.outputs.time }} minutes
           color: gray
           channel: fulfillment-integration-tests-monitoring
           verbose: true
 
       - name: report failure
-        if: failure() || cancelled()
+        if: failure()
         uses: actions-ecosystem/action-slack-notifier@v1
         with:
           slack_token: ${{ secrets.slack_token }}
           message: |
-            integration tests failed after ${{ steps.exexution_time.outputs.time }} minutes
+            ${{ inputs.test_runner_endpoint }} integration test failed after ${{ steps.exexution_time.outputs.time }} minutes
           color: red
           channel: fulfillment-integration-tests-monitoring
           verbose: true
@@ -195,7 +208,7 @@ jobs:
         with:
           slack_token: ${{ secrets.slack_token }}
           message: |
-            integration tests succeed after ${{ steps.exexution_time.outputs.time }} minutes
+            ${{ inputs.test_runner_endpoint }} integration test succeed after ${{ steps.exexution_time.outputs.time }} minutes
           color: green
           channel: fulfillment-integration-tests-monitoring
           verbose: true
