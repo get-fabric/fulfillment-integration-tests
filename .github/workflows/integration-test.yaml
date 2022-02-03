@@ -187,7 +187,7 @@ jobs:
           slack_token: ${{ secrets.slack_token }}
           message: |
             ${{ inputs.test_runner_endpoint }} integration test was cancelled after ${{ steps.exexution_time.outputs.time }} minutes
-          color: gray
+          color: yellow
           channel: fulfillment-integration-tests-monitoring
           verbose: true
 
