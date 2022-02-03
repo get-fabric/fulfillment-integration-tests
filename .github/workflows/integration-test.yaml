@@ -157,17 +157,6 @@ jobs:
           kubectl delete -n ${{ inputs.namespace }} -f ${{ inputs.service_name }}/deployment/${{ inputs.service_name }}.yaml --grace-period=0 --force=true --all=true
           kubectl delete pv/mongo-pv
 
-      - name: report failure
-        if: failure() || cancelled()
-        uses: actions-ecosystem/action-slack-notifier@v1
-        with:
-          slack_token: ${{ secrets.slack_token }}
-          message: |
-            integration tests failed
-          color: red
-          channel: fulfillment-integration-tests-monitoring
-          verbose: true
-
       - name: calculate exeuction time
         id: exexution_time
         run: |
@@ -178,13 +167,35 @@ jobs:
           executionTime=$(printf "%02d:%02d" $min $sec)
           echo "::set-output name=time::$executionTime"
 
+      - name: report cancelled
+        if: cancelled()
+        uses: actions-ecosystem/action-slack-notifier@v1
+        with:
+          slack_token: ${{ secrets.slack_token }}
+          message: |
+            integration tests were cancelled after ${{ steps.exexution_time.outputs.time }} minutes
+          color: gray
+          channel: fulfillment-integration-tests-monitoring
+          verbose: true
+
+      - name: report failure
+        if: failure() || cancelled()
+        uses: actions-ecosystem/action-slack-notifier@v1
+        with:
+          slack_token: ${{ secrets.slack_token }}
+          message: |
+            integration tests failed after ${{ steps.exexution_time.outputs.time }} minutes
+          color: red
+          channel: fulfillment-integration-tests-monitoring
+          verbose: true
+
       - name: report success
         if: success()
         uses: actions-ecosystem/action-slack-notifier@v1
         with:
           slack_token: ${{ secrets.slack_token }}
           message: |
-            integration tests completed successfully within ${{ steps.exexution_time.outputs.time }} minutes
+            integration tests succeed after ${{ steps.exexution_time.outputs.time }} minutes
           color: green
           channel: fulfillment-integration-tests-monitoring
           verbose: true
