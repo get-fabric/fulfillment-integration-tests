@@ -71,7 +71,7 @@ jobs:
     runs-on: [self-hosted,fullfilment-integration-tests]
     timeout-minutes: 10
     steps:
-      - name: mark start time
+      - name: started
         id: start_time
         run: echo "::set-output name=time::$(date +%s)"
 
