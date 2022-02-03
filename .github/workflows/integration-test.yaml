@@ -208,7 +208,7 @@ jobs:
         with:
           slack_token: ${{ secrets.slack_token }}
           message: |
-            ${{ inputs.test_runner_endpoint }} integration test succeed after ${{ steps.exexution_time.outputs.time }} minutes
+            ${{ inputs.test_runner_endpoint }} integration test succeeded after ${{ steps.exexution_time.outputs.time }} minutes
           color: green
           channel: fulfillment-integration-tests-monitoring
           verbose: true
