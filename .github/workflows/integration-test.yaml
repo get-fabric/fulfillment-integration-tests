@@ -75,25 +75,24 @@ jobs:
         id: start_time
         run: echo "::set-output name=time::$(date +%s)"
 
-      # - name: install helm
-      #   uses: azure/setup-helm@v1
-      #   with:
-      #     version: latest
+      - name: install helm
+        uses: azure/setup-helm@v1
+        with:
+          version: latest
 
-      # - name: install node
-      #   run: |
-      #     sudo apt update -y
-      #     sudo apt install nodejs -y
-      #     node -v
+      - name: install node
+        run: |
+          sudo apt update -y
+          sudo apt install nodejs -y
+          node -v
 
-      # - name: clone fulfillment-integration repository
-      #   uses: actions/checkout@v2
-      #   with:
-      #     path: fulfillment-integration
-      #     repository: get-fabric/fulfillment-integration
-      #     fetch-depth: 0
-      #     ref: main
-      #     token: ${{ secrets.git_token }}
+      - name: clone fulfillment-integration repository
+        uses: actions/checkout@v2
+        with:
+          path: fulfillment-integration
+          repository: get-fabric/fulfillment-integration
+          ref: main
+          token: ${{ secrets.git_token }}
 
       # - name: clone fulfillment-integration-tests repository
       #   uses: actions/checkout@v2
