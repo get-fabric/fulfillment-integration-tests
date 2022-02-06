@@ -109,7 +109,6 @@ jobs:
       - name: deploy services
         working-directory: fulfillment-integration
         run: |
-          kubectl delete -n default -f ./deployments/default/mongo.yaml --grace-period=0 --all=true
           bash ./manage_services.sh deployments apply
           bash ./wait_for_pods_ready.sh 5
 
@@ -168,6 +167,7 @@ jobs:
         if: always()
         run: |
           kubectl delete -n ${{ inputs.namespace }} -f ${{ inputs.service_name }}/deployment/${{ inputs.service_name }}.yaml --grace-period=0 --all=true
+          kubectl delete pv/mongo-pv
 
       - name: calculate exeuction time
         id: exexution_time
