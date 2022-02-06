@@ -86,12 +86,12 @@ jobs:
           sudo apt install nodejs -y
           node -v
 
-      - name: clone fulfillment-integration repository
-        uses: actions/checkout@v2
-        with:
-          path: fulfillment-integration
-          repository: get-fabric/fulfillment-integration
-          token: ${{ secrets.git_token }}
+      # - name: clone fulfillment-integration repository
+      #   uses: actions/checkout@v2
+      #   with:
+      #     path: fulfillment-integration
+      #     repository: get-fabric/fulfillment-integration
+      #     token: ${{ secrets.git_token }}
 
       # - name: clone fulfillment-integration-tests repository
       #   uses: actions/checkout@v2
