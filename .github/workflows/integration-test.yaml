@@ -91,7 +91,6 @@ jobs:
         with:
           path: fulfillment-integration
           repository: get-fabric/fulfillment-integration
-          ref: main
           token: ${{ secrets.git_token }}
 
       # - name: clone fulfillment-integration-tests repository
