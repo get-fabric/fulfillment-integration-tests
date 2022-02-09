@@ -18,7 +18,7 @@ cat ./services_cluster_missing_from_folder | while read line || [ -n "$line" ]
 do
    kubectl delete deployment $line --namespace fulfillment || true
    kubectl delete deployment $line-kafka-consumer --namespace fulfillment || true
-   kubectl delete deployment $line-kafka-produer --namespace fulfillment || true
+   kubectl delete deployment $line-kafka-producer --namespace fulfillment || true
 done
 
 rm -rf services_cluster_missing_from_folder
