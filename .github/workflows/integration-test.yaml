@@ -159,7 +159,6 @@ jobs:
         with:
           name: logs
           path: ./fulfillment-integration/logs
-          retention-days: 7
 
       - name: cleanup
         if: always()
