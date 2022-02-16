@@ -154,7 +154,7 @@ jobs:
           sh ./extract_logs.sh default 10m || true
 
       - name: write log artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v1
         if: always()
         with:
           name: logs
