@@ -190,6 +190,7 @@ jobs:
 
       - name: report failure
         if: failure()
+        continue-on-error: true
         uses: actions-ecosystem/action-slack-notifier@v1
         with:
           slack_token: ${{ secrets.slack_token }}
@@ -201,6 +202,7 @@ jobs:
 
       - name: report success
         if: success()
+        continue-on-error: true
         uses: actions-ecosystem/action-slack-notifier@v1
         with:
           slack_token: ${{ secrets.slack_token }}
