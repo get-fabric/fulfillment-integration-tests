@@ -141,9 +141,9 @@ jobs:
           sleep 5
           bash ./fulfillment-integration/wait_for_pods_ready.sh 5
 
-#       - name: run test
-#         working-directory: fulfillment-integration-tests
-#         run: bash ./test.sh ${{ inputs.test_runner_service_name }} ${{ inputs.test_runner_endpoint }}
+       - name: run test
+         working-directory: fulfillment-integration-tests
+         run: bash ./test.sh ${{ inputs.test_runner_service_name }} ${{ inputs.test_runner_endpoint }}
 
       - name: write logs
         if: always()
