@@ -3,7 +3,7 @@ test_runner_endpoint=$2
 
 kubectl -n fulfillment port-forward svc/$test_runner_service_name 3478:80 &
 echo "waiting after port forward"
-sleep 10
+sleep 60
 
 echo "calling test runner $test_runner_endpoint endpoint..."
 status_code=$(curl --max-time 120 --verbose -LI http://localhost:3478/$test_runner_endpoint -o /dev/null -w '%{http_code}\n' -s)
