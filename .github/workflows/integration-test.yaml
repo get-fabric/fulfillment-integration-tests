@@ -139,7 +139,7 @@ jobs:
           kubectl delete -n ${{ inputs.namespace }} -f ${{ inputs.service_name }}/deployment/${{ inputs.service_name }}.yaml --grace-period=0 --ignore-not-found=true
           kubectl apply -n ${{ inputs.namespace }} -f ${{ inputs.service_name }}/deployment/${{ inputs.service_name }}.yaml
           sleep 5
-          bash ../fulfillment-integration-tests/wait_for_pods_ready.sh 5
+          bash ./fulfillment-integration-tests/wait_for_pods_ready.sh 5
 
       - name: run test
         working-directory: fulfillment-integration-tests
