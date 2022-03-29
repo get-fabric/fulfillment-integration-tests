@@ -107,7 +107,7 @@ jobs:
       - name: deploy services
         working-directory: fulfillment-integration-tests
         run: |
-          bash ./manage_services.sh deployments apply
+          bash ./manage_services.sh ../fulfillment-integration/deployments apply
           bash ./wait_for_pods_ready.sh 5
 
       - name: wait for build image to succeed
@@ -139,7 +139,7 @@ jobs:
           kubectl delete -n ${{ inputs.namespace }} -f ${{ inputs.service_name }}/deployment/${{ inputs.service_name }}.yaml --grace-period=0 --ignore-not-found=true
           kubectl apply -n ${{ inputs.namespace }} -f ${{ inputs.service_name }}/deployment/${{ inputs.service_name }}.yaml
           sleep 5
-          bash ./fulfillment-integration/wait_for_pods_ready.sh 5
+          bash ./wait_for_pods_ready.sh 5
 
       - name: run test
         working-directory: fulfillment-integration-tests
