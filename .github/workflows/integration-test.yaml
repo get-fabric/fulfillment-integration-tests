@@ -86,6 +86,15 @@ jobs:
           sudo apt install nodejs -y
           node -v
 
+      - name: install gcloud
+        run: |
+          ddddd
+
+      - name: install vcluser-cli
+        run: |
+          curl -s -L "https://github.com/loft-sh/vcluster/releases/latest" | sed -nE 's!.*"([^"]*vcluster-darwin-amd64)".*!https://github.com\1!p' | xargs -n 1 curl -L -o vcluster && chmod +x vcluster;
+          sudo mv vcluster /usr/local/bin;
+
       - name: clone fulfillment-integration repository
         uses: actions/checkout@v2
         with:
@@ -100,9 +109,13 @@ jobs:
           repository: get-fabric/fulfillment-integration-tests
           token: ${{ secrets.git_token }}
 
-      - name: prepare cluster
-        working-directory: fulfillment-integration-tests
-        run: bash ./prepare/run.sh ../fulfillment-integration/deployments
+      - name: connect to cluster
+        run: |
+          gcloud container clusters get-credentials integration --region us-east4 --project fabric-global-test
+          vcluster connect vcluster-1 -n vcluster-integration-tests &
+          sleep 10
+          cp ./kubeconfig.yaml ~/kubeconfig.yaml
+          export KUBECONFIG=~/kubeconfig.yaml
 
       - name: deploy services
         working-directory: fulfillment-integration-tests
@@ -144,21 +157,6 @@ jobs:
       - name: run test
         working-directory: fulfillment-integration-tests
         run: bash ./test.sh ${{ inputs.test_runner_service_name }} ${{ inputs.test_runner_endpoint }}
-
-      - name: write logs
-        if: always()
-        working-directory: fulfillment-integration-tests
-        run: |
-          sh ./extract_logs.sh fulfillment 10m || true
-          sh ./extract_logs.sh job-management 10m || true
-          sh ./extract_logs.sh default 10m || true
-
-      - name: write log artifacts
-        uses: actions/upload-artifact@v1
-        if: always()
-        with:
-          name: logs
-          path: ./fulfillment-integration-tests/logs
 
       - name: cleanup
         if: always()
