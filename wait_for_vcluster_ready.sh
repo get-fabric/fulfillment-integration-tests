@@ -6,8 +6,7 @@ get_ready_vcluster_pod_count() {
 
 sleepSeconds=${1:-5}
 
-until [ $total -eq $ready ]
-do
+while true
     sleep $((sleepSeconds))
 
     if [ $(get_ready_vcluster_pod_count) -ne 1 ]
@@ -15,6 +14,7 @@ do
         echo "vcluster not ready"
     else
         echo "vcluster ready"
+        break
     fi
 
 done
