@@ -124,9 +124,9 @@ jobs:
           vcluster connect vcluster-1 -n tests-$cluster_name &
 
       - name: create cluster 2
-        working-directory: fulfillment-integration
+        working-directory: fulfillment-integration-tests
         run: |
-          sleep 30
+          bash ./wait_for_pods_ready.sh 5
 
       - name: create cluster 3
         working-directory: fulfillment-integration
