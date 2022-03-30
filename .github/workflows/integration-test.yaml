@@ -118,8 +118,9 @@ jobs:
           gcloud components install kubectl
           curl -s -L "https://github.com/loft-sh/vcluster/releases/latest" | sed -nE 's!.*"([^"]*vcluster-linux-amd64)".*!https://github.com\1!p' | xargs -n 1 curl -L -o vcluster && chmod +x vcluster;
           sudo mv vcluster /usr/local/bin;
-          vcluster create vcluster-1 -n tests-$RANDOM
-          vcluster connect vcluster-1 -n tests-$RANDOM &
+          cluster_name=tests-$RANDOM
+          vcluster create vcluster-1 -n tests-$cluster_name
+          vcluster connect vcluster-1 -n tests-$cluster_name &
           sleep 10
           echo 11111
           ls
