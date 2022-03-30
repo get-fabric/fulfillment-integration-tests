@@ -33,7 +33,7 @@ on:
 
 jobs:
   build-image:
-    runs-on: [self-hosted, prod]
+    runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
     - name: gcr login
@@ -68,7 +68,7 @@ jobs:
         cache-to: type=gha, scope=${{ github.workflow }}
 
   sanity:
-    runs-on: [self-hosted, prod]
+    runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
       - name: started
