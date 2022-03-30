@@ -33,7 +33,7 @@ on:
 
 jobs:
   build-image:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, prod]
     timeout-minutes: 5
     steps:
     - name: gcr login
@@ -68,7 +68,7 @@ jobs:
         cache-to: type=gha, scope=${{ github.workflow }}
 
   sanity:
-    runs-on: [self-hosted,fullfilment-integration-tests]
+    runs-on: [self-hosted, prod]
     timeout-minutes: 10
     steps:
       - name: started
@@ -109,10 +109,11 @@ jobs:
           repository: get-fabric/fulfillment-integration-tests
           token: ${{ secrets.git_token }}
 
-      - name: connect to cluster
+      - name: create cluster
         run: |
-          gcloud container clusters get-credentials integration --region us-east4 --project fabric-global-test
-          vcluster connect vcluster-1 -n vcluster-integration-tests &
+          gcloud container clusters get-credentials integration-tests --region us-east4 --project fabric-global-test
+          vcluster create vcluster-1 -n tests-$RANDOM
+          vcluster connect vcluster-1 -n tests-$RANDOM &
           sleep 10
           cp ./kubeconfig.yaml ~/kubeconfig.yaml
           export KUBECONFIG=~/kubeconfig.yaml
@@ -158,11 +159,10 @@ jobs:
         working-directory: fulfillment-integration-tests
         run: bash ./test.sh ${{ inputs.test_runner_service_name }} ${{ inputs.test_runner_endpoint }}
 
-      - name: cleanup
+      - name: delete cluster
         if: always()
         run: |
-          kubectl delete -n ${{ inputs.namespace }} -f ${{ inputs.service_name }}/deployment/${{ inputs.service_name }}.yaml --grace-period=0 --all=true
-          kubectl delete pv/mongo-pv
+          vcluster delete vcluster-1 -n tests-$RANDOM
 
       - name: calculate exeuction time
         id: exexution_time
