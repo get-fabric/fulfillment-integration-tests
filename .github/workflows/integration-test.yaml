@@ -118,8 +118,8 @@ jobs:
           gcloud components install kubectl
           curl -s -L "https://github.com/loft-sh/vcluster/releases/latest" | sed -nE 's!.*"([^"]*vcluster-linux-arm64)".*!https://github.com\1!p' | xargs -n 1 curl -L -o vcluster && chmod +x vcluster;
           sudo mv vcluster /usr/local/bin;
-          sudo vcluster create vcluster-1 -n tests-1
-          sudo vcluster connect vcluster-1 -n tests-1 &
+          sudo vcluster create vcluster-1 -n tests-$RANDOM
+          sudo vcluster connect vcluster-1 -n tests-$RANDOM &
           sleep 10
           cp ./kubeconfig.yaml ~/kubeconfig.yaml
           export KUBECONFIG=~/kubeconfig.yaml
@@ -168,7 +168,7 @@ jobs:
       - name: delete cluster
         if: always()
         run: |
-          vcluster delete vcluster-1 -n tests-1
+          vcluster delete vcluster-1 -n tests-$RANDOM
 
       - name: calculate exeuction time
         id: exexution_time
