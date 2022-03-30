@@ -21,10 +21,10 @@ on:
         required: false
         default: sanity
         type: string
-      debug_enabled:
+      debug:
         required: false
         default: false
-        type: string
+        type: boolean
     secrets:
       git_token:
         required: true
@@ -221,4 +221,4 @@ jobs:
 
       - name: enabled debug
         uses: mxschmitt/action-tmate@v3
-        if: ${{ .inputs.debug_enabled }}
+        if: ${{ inputs.debug_enabled }}
