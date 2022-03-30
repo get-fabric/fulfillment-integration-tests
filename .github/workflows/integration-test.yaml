@@ -21,6 +21,10 @@ on:
         required: false
         default: sanity
         type: string
+      debug_enabled:
+        required: false
+        default: false
+        type: string
     secrets:
       git_token:
         required: true
