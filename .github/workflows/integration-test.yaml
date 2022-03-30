@@ -120,16 +120,13 @@ jobs:
         working-directory: fulfillment-integration-tests
         run: |
           gcloud container clusters get-credentials integration-tests --region us-east4 --project fabric-global-test
-          gcloud components install kubectl
           curl -s -L "https://github.com/loft-sh/vcluster/releases/latest" | sed -nE 's!.*"([^"]*vcluster-linux-amd64)".*!https://github.com\1!p' | xargs -n 1 curl -L -o vcluster && chmod +x vcluster;
           sudo mv vcluster /usr/local/bin;
           cluster_name=tests-$RANDOM
           echo ::set-output name=cluster_name::$cluster_name
           vcluster create vcluster-1 -n $cluster_name
-          ls
-          bash ./wait_for_vcluster_ready.sh 5
+          sleep 60
           vcluster connect vcluster-1 -n $cluster_name &
-          sleep 20
           cp ./kubeconfig.yaml ~/kubeconfig.yaml
           export KUBECONFIG=~/kubeconfig.yaml
 
