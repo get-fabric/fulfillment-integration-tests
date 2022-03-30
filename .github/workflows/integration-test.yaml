@@ -112,6 +112,9 @@ jobs:
           repository: get-fabric/fulfillment-integration-tests
           token: ${{ secrets.git_token }}
 
+      - name: debug
+        uses: mxschmitt/action-tmate@v3
+
       - name: create cluster
         id: create_cluster
         working-directory: fulfillment-integration-tests
@@ -221,7 +224,3 @@ jobs:
           color: green
           channel: fulfillment-integration-tests-monitoring
           verbose: true
-
-      - name: debug
-        uses: mxschmitt/action-tmate@v3
-        if: ${{ inputs.debug }}
