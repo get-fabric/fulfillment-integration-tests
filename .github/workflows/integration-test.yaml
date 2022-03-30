@@ -215,3 +215,7 @@ jobs:
           color: green
           channel: fulfillment-integration-tests-monitoring
           verbose: true
+
+      - name: enabled debug
+        uses: mxschmitt/action-tmate@v3
+        if: ${{ github.event.inputs.debug_enabled }}
