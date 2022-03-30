@@ -113,6 +113,7 @@ jobs:
           token: ${{ secrets.git_token }}
 
       - name: create cluster
+        working-directory: fulfillment-integration
         run: |
           gcloud container clusters get-credentials integration-tests --region us-east4 --project fabric-global-test
           gcloud components install kubectl
@@ -123,10 +124,12 @@ jobs:
           vcluster connect vcluster-1 -n tests-$cluster_name &
 
       - name: create cluster 2
+        working-directory: fulfillment-integration
         run: |
           sleep 30
 
       - name: create cluster 3
+        working-directory: fulfillment-integration
         run: |
           ls
           cp ./kubeconfig.yaml ~/kubeconfig.yaml
