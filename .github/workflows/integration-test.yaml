@@ -218,4 +218,4 @@ jobs:
 
       - name: enabled debug
         uses: mxschmitt/action-tmate@v3
-        if: ${{ github.event.inputs.debug_enabled }}
+        if: always() && ${{ github.event.inputs.debug_enabled }}
