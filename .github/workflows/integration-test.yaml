@@ -128,12 +128,11 @@ jobs:
           sleep 60
           vcluster connect vcluster-1 -n $cluster_name &
           sleep 5
-          cp ./kubeconfig.yaml ~/kubeconfig.yaml
-          export KUBECONFIG=~/kubeconfig.yaml
 
       - name: deploy services
         working-directory: fulfillment-integration-tests
         run: |
+          export KUBECONFIG=./kubeconfig.yaml
           bash ./manage_services.sh ../fulfillment-integration/deployments apply
           bash ./wait_for_pods_ready.sh 5
 
