@@ -1,0 +1,20 @@
+#!/bin/sh
+
+get_ready_vcluster_pod_count() {
+    echo $((`kubectl get pods --all-namespaces | grep -v "vcluster" | grep "Running" | grep 2/2 | wc -l`))
+}
+
+sleepSeconds=${1:-5}
+
+until [ $total -eq $ready ]
+do
+    sleep $((sleepSeconds))
+
+    if [ $(get_ready_vcluster_pod_count) -ne 1 ]
+    then
+        echo "vcluster not ready"
+    else
+        echo "vcluster ready"
+    fi
+
+done
