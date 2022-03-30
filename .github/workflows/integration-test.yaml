@@ -121,8 +121,19 @@ jobs:
           cluster_name=tests-$RANDOM
           vcluster create vcluster-1 -n tests-$cluster_name
           vcluster connect vcluster-1 -n tests-$cluster_name &
+          echo sleeping
           sleep 30
           echo 11111
+          ls
+          cp ./kubeconfig.yaml ~/kubeconfig.yaml
+          export KUBECONFIG=~/kubeconfig.yaml
+
+      - name: create cluster 2
+        run: |
+          sleep 30
+
+      - name: create cluster 3
+        run: |
           ls
           cp ./kubeconfig.yaml ~/kubeconfig.yaml
           export KUBECONFIG=~/kubeconfig.yaml
