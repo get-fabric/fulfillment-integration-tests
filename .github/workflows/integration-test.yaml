@@ -84,11 +84,11 @@ jobs:
         with:
           version: latest
 
-      - name: install node
-        run: |
-          sudo apt update -y
-          sudo apt install nodejs -y
-          node -v
+      # - name: install node
+      #   run: |
+      #     sudo apt update -y
+      #     sudo apt install nodejs -y
+      #     node -v
 
       - name: 'gcloud auth login'
         uses: 'google-github-actions/auth@v0'
@@ -121,6 +121,8 @@ jobs:
           vcluster create vcluster-1 -n tests-$RANDOM
           vcluster connect vcluster-1 -n tests-$RANDOM &
           sleep 10
+          echo 11111
+          ls
           cp ./kubeconfig.yaml ~/kubeconfig.yaml
           export KUBECONFIG=~/kubeconfig.yaml
 
