@@ -86,9 +86,14 @@ jobs:
           sudo apt install nodejs -y
           node -v
 
-      - name: install gcloud
-        run: |
-          ddddd
+      - id: 'gcloud auth login'
+        name: 'Authenticate to Google Cloud'
+        uses: 'google-github-actions/auth@v0'
+        with:
+          credentials_json: '${{ secrets.gcloud_token }}'
+
+      - name: install gcloud cli
+        uses: google-github-actions/setup-gcloud@v0.3.0
 
       - name: clone fulfillment-integration repository
         uses: actions/checkout@v2
