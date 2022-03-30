@@ -112,8 +112,8 @@ jobs:
           repository: get-fabric/fulfillment-integration-tests
           token: ${{ secrets.git_token }}
 
-      - name: debug
-        uses: mxschmitt/action-tmate@v3
+      # - name: debug
+      #   uses: mxschmitt/action-tmate@v3
 
       - name: create cluster
         id: create_cluster
@@ -127,6 +127,7 @@ jobs:
           vcluster create vcluster-1 -n $cluster_name
           sleep 60
           vcluster connect vcluster-1 -n $cluster_name &
+          sleep 5
           cp ./kubeconfig.yaml ~/kubeconfig.yaml
           export KUBECONFIG=~/kubeconfig.yaml
 
