@@ -121,6 +121,7 @@ jobs:
           sudo mv vcluster /usr/local/bin;
           cluster_name=tests-$RANDOM
           vcluster create vcluster-1 -n $cluster_name
+          ls
           bash ./wait_for_vcluster_ready.sh 5
           vcluster connect vcluster-1 -n $cluster_name &
           sleep 20
@@ -219,6 +220,6 @@ jobs:
           channel: fulfillment-integration-tests-monitoring
           verbose: true
 
-      - name: enabled debug
+      - name: debug
         uses: mxschmitt/action-tmate@v3
         if: ${{ inputs.debug }}
