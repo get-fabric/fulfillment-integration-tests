@@ -1,18 +1,19 @@
 #!/bin/sh
 
 get_total_running_pods_count () {
-    echo $((`kubectl get pods --all-namespaces | grep -v "kube-system" | grep "Running" | wc -l` - 1))
+    echo $((`kubectl --kubeconfig $kubeconigPath get pods --all-namespaces | grep -v "kube-system" | grep "Running" | wc -l` - 1))
 }
 
 get_not_ready_running_pods_count () {
-    echo $((`kubectl --kubeconfig ./kubeconfig.yaml get pods --all-namespaces | grep -v "kube-system" | grep "Running" | grep 0/ | wc -l`))
+    echo $((`kubectl --kubeconfig $kubeconigPath ./kubeconfig.yaml get pods --all-namespaces | grep -v "kube-system" | grep "Running" | grep 0/ | wc -l`))
 }
 
 list_not_ready_runninng_pods () {
-    kubectl --kubeconfig ./kubeconfig.yaml get pods --all-namespaces | grep -v "kube-system" | grep "Running" | grep 0/1
+    kubectl --kubeconfig $kubeconigPath ./kubeconfig.yaml get pods --all-namespaces | grep -v "kube-system" | grep "Running" | grep 0/1
 }
 
 sleepSeconds=${1:-5}
+kubeconigPath=${2:-~/.kube/config}
 
 total=0
 ready=-1
