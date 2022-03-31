@@ -113,9 +113,6 @@ jobs:
           ref: vcluster
           token: ${{ secrets.git_token }}
 
-      # - name: debug
-      #   uses: mxschmitt/action-tmate@v3
-
       - name: create cluster
         id: create_cluster
         working-directory: fulfillment-integration-tests
@@ -129,6 +126,9 @@ jobs:
           sleep 60
           vcluster connect vcluster-1 -n $cluster_name &
           sleep 5
+
+      - name: debug
+        uses: mxschmitt/action-tmate@v3
 
       - name: deploy services
         working-directory: fulfillment-integration-tests
