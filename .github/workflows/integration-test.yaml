@@ -75,139 +75,139 @@ jobs:
         id: start_time
         run: echo "::set-output name=time::$(date +%s)"
 
-      - name: install helm
-        uses: azure/setup-helm@v1
-        with:
-          version: latest
+#       - name: install helm
+#         uses: azure/setup-helm@v1
+#         with:
+#           version: latest
 
-      - name: install node
-        run: |
-          sudo apt update -y
-          sudo apt install nodejs -y
-          node -v
+#       - name: install node
+#         run: |
+#           sudo apt update -y
+#           sudo apt install nodejs -y
+#           node -v
 
-      - name: clone fulfillment-integration repository
-        uses: actions/checkout@v2
-        with:
-          path: fulfillment-integration
-          repository: get-fabric/fulfillment-integration
-          token: ${{ secrets.git_token }}
+#       - name: clone fulfillment-integration repository
+#         uses: actions/checkout@v2
+#         with:
+#           path: fulfillment-integration
+#           repository: get-fabric/fulfillment-integration
+#           token: ${{ secrets.git_token }}
 
-      - name: clone fulfillment-integration-tests repository
-        uses: actions/checkout@v2
-        with:
-          path: fulfillment-integration-tests
-          repository: get-fabric/fulfillment-integration-tests
-          token: ${{ secrets.git_token }}
+#       - name: clone fulfillment-integration-tests repository
+#         uses: actions/checkout@v2
+#         with:
+#           path: fulfillment-integration-tests
+#           repository: get-fabric/fulfillment-integration-tests
+#           token: ${{ secrets.git_token }}
 
-      - name: prepare cluster
-        working-directory: fulfillment-integration-tests
-        run: bash ./prepare/run.sh ../fulfillment-integration/deployments
+#       - name: prepare cluster
+#         working-directory: fulfillment-integration-tests
+#         run: bash ./prepare/run.sh ../fulfillment-integration/deployments
 
-      - name: deploy services
-        working-directory: fulfillment-integration-tests
-        run: |
-          bash ./manage_services.sh ../fulfillment-integration/deployments apply
-          bash ./wait_for_pods_ready.sh 5
+#       - name: deploy services
+#         working-directory: fulfillment-integration-tests
+#         run: |
+#           bash ./manage_services.sh ../fulfillment-integration/deployments apply
+#           bash ./wait_for_pods_ready.sh 5
 
-      - name: wait for build image to succeed
-        uses: fountainhead/action-wait-for-check@v1.0.0
-        id: wait-for-build
-        with:
-          token: ${{ secrets.git_token }}
-          checkName: integration-test / build-image
-          intervalSeconds: 1
-          ref: ${{ github.event.pull_request.head.sha || github.sha }}
-          timeoutSeconds: 120
+#       - name: wait for build image to succeed
+#         uses: fountainhead/action-wait-for-check@v1.0.0
+#         id: wait-for-build
+#         with:
+#           token: ${{ secrets.git_token }}
+#           checkName: integration-test / build-image
+#           intervalSeconds: 1
+#           ref: ${{ github.event.pull_request.head.sha || github.sha }}
+#           timeoutSeconds: 120
 
-      - name: clone repository
-        uses: actions/checkout@v2
-        with:
-          path: ${{ inputs.service_name }}
-          repository: get-fabric/${{ inputs.service_name }}
-          ref: ${{ inputs.branch }}
-          token: ${{ secrets.git_token }}
+#       - name: clone repository
+#         uses: actions/checkout@v2
+#         with:
+#           path: ${{ inputs.service_name }}
+#           repository: get-fabric/${{ inputs.service_name }}
+#           ref: ${{ inputs.branch }}
+#           token: ${{ secrets.git_token }}
 
-      - name: generate yaml
-        run: |
-          cd ${{ inputs.service_name }}/deployment
-          helm dep update
-          helm template -f values.yaml -f values.integration.yaml --name-template=${{ inputs.service_name }} --set fabric-chart.image.tag="${{ github.event.pull_request.head.sha || github.sha }}" --set fabric-chart.image.pullPolicy="Always" . > ${{ inputs.service_name }}.yaml
+#       - name: generate yaml
+#         run: |
+#           cd ${{ inputs.service_name }}/deployment
+#           helm dep update
+#           helm template -f values.yaml -f values.integration.yaml --name-template=${{ inputs.service_name }} --set fabric-chart.image.tag="${{ github.event.pull_request.head.sha || github.sha }}" --set fabric-chart.image.pullPolicy="Always" . > ${{ inputs.service_name }}.yaml
 
-      - name: deploy
-        run: |
-          kubectl delete -n ${{ inputs.namespace }} -f ${{ inputs.service_name }}/deployment/${{ inputs.service_name }}.yaml --grace-period=0 --ignore-not-found=true
-          kubectl apply -n ${{ inputs.namespace }} -f ${{ inputs.service_name }}/deployment/${{ inputs.service_name }}.yaml
-          sleep 5
-          bash ./fulfillment-integration-tests/wait_for_pods_ready.sh 5
+#       - name: deploy
+#         run: |
+#           kubectl delete -n ${{ inputs.namespace }} -f ${{ inputs.service_name }}/deployment/${{ inputs.service_name }}.yaml --grace-period=0 --ignore-not-found=true
+#           kubectl apply -n ${{ inputs.namespace }} -f ${{ inputs.service_name }}/deployment/${{ inputs.service_name }}.yaml
+#           sleep 5
+#           bash ./fulfillment-integration-tests/wait_for_pods_ready.sh 5
 
-      - name: run test
-        working-directory: fulfillment-integration-tests
-        run: bash ./test.sh ${{ inputs.test_runner_service_name }} ${{ inputs.test_runner_endpoint }}
+#       - name: run test
+#         working-directory: fulfillment-integration-tests
+#         run: bash ./test.sh ${{ inputs.test_runner_service_name }} ${{ inputs.test_runner_endpoint }}
 
-      - name: write logs
-        if: always()
-        working-directory: fulfillment-integration-tests
-        run: |
-          sh ./extract_logs.sh fulfillment 10m || true
-          sh ./extract_logs.sh job-management 10m || true
-          sh ./extract_logs.sh default 10m || true
+#       - name: write logs
+#         if: always()
+#         working-directory: fulfillment-integration-tests
+#         run: |
+#           sh ./extract_logs.sh fulfillment 10m || true
+#           sh ./extract_logs.sh job-management 10m || true
+#           sh ./extract_logs.sh default 10m || true
 
-      - name: write log artifacts
-        uses: actions/upload-artifact@v1
-        if: always()
-        with:
-          name: logs
-          path: ./fulfillment-integration-tests/logs
+#       - name: write log artifacts
+#         uses: actions/upload-artifact@v1
+#         if: always()
+#         with:
+#           name: logs
+#           path: ./fulfillment-integration-tests/logs
 
-      - name: cleanup
-        if: always()
-        run: |
-          kubectl delete -n ${{ inputs.namespace }} -f ${{ inputs.service_name }}/deployment/${{ inputs.service_name }}.yaml --grace-period=0 --all=true
-          kubectl delete pv/mongo-pv
+#       - name: cleanup
+#         if: always()
+#         run: |
+#           kubectl delete -n ${{ inputs.namespace }} -f ${{ inputs.service_name }}/deployment/${{ inputs.service_name }}.yaml --grace-period=0 --all=true
+#           kubectl delete pv/mongo-pv
 
-      - name: calculate exeuction time
-        id: exexution_time
-        if: always()
-        run: |
-          startTime=${{ steps.start_time.outputs.time }}
-          currentTime=$(date +%s)
-          executionTimeSeconds=$((currentTime-startTime))
-          ((sec=executionTimeSeconds%60, executionTimeSeconds/=60, min=executionTimeSeconds%60))
-          executionTime=$(printf "%02d:%02d" $min $sec)
-          echo "::set-output name=time::$executionTime"
+#       - name: calculate exeuction time
+#         id: exexution_time
+#         if: always()
+#         run: |
+#           startTime=${{ steps.start_time.outputs.time }}
+#           currentTime=$(date +%s)
+#           executionTimeSeconds=$((currentTime-startTime))
+#           ((sec=executionTimeSeconds%60, executionTimeSeconds/=60, min=executionTimeSeconds%60))
+#           executionTime=$(printf "%02d:%02d" $min $sec)
+#           echo "::set-output name=time::$executionTime"
 
-      - name: report cancelled
-        if: cancelled()
-        uses: actions-ecosystem/action-slack-notifier@v1
-        with:
-          slack_token: ${{ secrets.slack_token }}
-          message: |
-            ${{ inputs.test_runner_endpoint }} integration test was cancelled after ${{ steps.exexution_time.outputs.time }} minutes
-          color: yellow
-          channel: fulfillment-integration-tests-monitoring
-          verbose: true
+#       - name: report cancelled
+#         if: cancelled()
+#         uses: actions-ecosystem/action-slack-notifier@v1
+#         with:
+#           slack_token: ${{ secrets.slack_token }}
+#           message: |
+#             ${{ inputs.test_runner_endpoint }} integration test was cancelled after ${{ steps.exexution_time.outputs.time }} minutes
+#           color: yellow
+#           channel: fulfillment-integration-tests-monitoring
+#           verbose: true
 
-      - name: report failure
-        if: failure()
-        continue-on-error: true
-        uses: actions-ecosystem/action-slack-notifier@v1
-        with:
-          slack_token: ${{ secrets.slack_token }}
-          message: |
-            ${{ inputs.test_runner_endpoint }} integration test failed after ${{ steps.exexution_time.outputs.time }} minutes
-          color: red
-          channel: fulfillment-integration-tests-monitoring
-          verbose: true
+#       - name: report failure
+#         if: failure()
+#         continue-on-error: true
+#         uses: actions-ecosystem/action-slack-notifier@v1
+#         with:
+#           slack_token: ${{ secrets.slack_token }}
+#           message: |
+#             ${{ inputs.test_runner_endpoint }} integration test failed after ${{ steps.exexution_time.outputs.time }} minutes
+#           color: red
+#           channel: fulfillment-integration-tests-monitoring
+#           verbose: true
 
-      - name: report success
-        if: success()
-        continue-on-error: true
-        uses: actions-ecosystem/action-slack-notifier@v1
-        with:
-          slack_token: ${{ secrets.slack_token }}
-          message: |
-            ${{ inputs.test_runner_endpoint }} integration test succeeded after ${{ steps.exexution_time.outputs.time }} minutes
-          color: green
-          channel: fulfillment-integration-tests-monitoring
-          verbose: true
+#       - name: report success
+#         if: success()
+#         continue-on-error: true
+#         uses: actions-ecosystem/action-slack-notifier@v1
+#         with:
+#           slack_token: ${{ secrets.slack_token }}
+#           message: |
+#             ${{ inputs.test_runner_endpoint }} integration test succeeded after ${{ steps.exexution_time.outputs.time }} minutes
+#           color: green
+#           channel: fulfillment-integration-tests-monitoring
+#           verbose: true
