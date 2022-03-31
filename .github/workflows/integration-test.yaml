@@ -123,8 +123,8 @@ jobs:
         working-directory: fulfillment-integration
         run: |
           export KUBECONFIG=../fulfillment-integration-tests/kubeconfig.yaml
-          kubectl create namespace fulfillment
-          kubectl create namespace job-management
+          kubectl create namespace fulfillment || true
+          kubectl create namespace job-management || true
           kubectl apply -f deployments/default
           kubectl apply -f deployments/fulfillment -n fulfillment
           kubectl apply -f deployments/job-management -n job-management
