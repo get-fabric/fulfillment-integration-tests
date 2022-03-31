@@ -123,7 +123,7 @@ jobs:
           cluster_name=tests-$RANDOM
           echo ::set-output name=cluster_name::$cluster_name
           vcluster create vcluster-1 -n $cluster_name
-          sleep 60
+          bash ./wait_for_vcluster_ready.sh $cluster_name
           vcluster connect vcluster-1 -n $cluster_name &
           sleep 5
 
