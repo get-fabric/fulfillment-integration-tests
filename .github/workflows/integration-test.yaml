@@ -107,18 +107,13 @@ jobs:
           ref: vcluster
           token: ${{ secrets.git_token }}
 
-      - name: create cluster
-        id: create_cluster
+      - name: prepare cluster
         working-directory: fulfillment-integration-tests
         run: |
-          gcloud container clusters get-credentials integration-tests --region us-east4 --project fabric-global-test
+          gcloud container clusters get-credentials integration --region us-east4 --project fabric-global-test
           curl -s -L "https://github.com/loft-sh/vcluster/releases/latest" | sed -nE 's!.*"([^"]*vcluster-linux-amd64)".*!https://github.com\1!p' | xargs -n 1 curl -L -o vcluster && chmod +x vcluster;
           sudo mv vcluster /usr/local/bin;
-          cluster_name=tests-$RANDOM
-          echo ::set-output name=cluster_name::$cluster_name
-          vcluster create vcluster-1 -n $cluster_name
-          bash ./wait_for_vcluster_ready.sh $cluster_name
-          vcluster connect vcluster-1 -n $cluster_name &
+          vcluster connect vcluster-1 -n integration-tests-1 &
           sleep 5
 
       # - name: debug
@@ -170,10 +165,11 @@ jobs:
         working-directory: fulfillment-integration-tests
         run: bash ./test.sh ${{ inputs.test_runner_service_name }} ${{ inputs.test_runner_endpoint }} ./kubeconfig.yaml
 
-      - name: delete cluster
+      - name: cleanup
         if: always()
         run: |
-          vcluster delete vcluster-1 -n ${{ steps.create_cluster.outputs.cluster_name }}
+          kubectl --kubeconfig ./fulfillment-integration-tests/kubeconfig.yaml delete -n ${{ inputs.namespace }} -f ${{ inputs.service_name }}/deployment/${{ inputs.service_name }}.yaml --grace-period=0 --all=true
+          kubectl --kubeconfig ./fulfillment-integration-tests/kubeconfig.yaml delete pv/mongo-pv
 
       - name: calculate exeuction time
         id: exexution_time
