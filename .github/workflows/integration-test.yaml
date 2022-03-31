@@ -174,7 +174,7 @@ jobs:
 
       - name: run test
         working-directory: fulfillment-integration-tests
-        run: bash ./test.sh ${{ inputs.test_runner_service_name }} ${{ inputs.test_runner_endpoint }}
+        run: bash ./test.sh ${{ inputs.test_runner_service_name }} ${{ inputs.test_runner_endpoint }} ./kubeconfig.yaml
 
       - name: delete cluster
         if: always()
