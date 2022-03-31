@@ -169,7 +169,9 @@ jobs:
         if: always()
         run: |
           kubectl --kubeconfig ./fulfillment-integration-tests/kubeconfig.yaml delete -n ${{ inputs.namespace }} -f ${{ inputs.service_name }}/deployment/${{ inputs.service_name }}.yaml --grace-period=0 --all=true
-          kubectl --kubeconfig ./fulfillment-integration-tests/kubeconfig.yaml delete pv/mongo-pv
+          kubectl --kubeconfig ./fulfillment-integration-tests/kubeconfig.yaml delete ./fulfillment-integration/deployments/default/mongo.yaml
+          kubectl --kubeconfig ./fulfillment-integration-tests/kubeconfig.yaml apply ./fulfillment-integration/deployments/default/mongo.yaml
+
 
       - name: calculate exeuction time
         id: exexution_time
