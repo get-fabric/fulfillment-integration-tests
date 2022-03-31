@@ -26,4 +26,8 @@ do
     ready=$(( total - notReady ))
 
     echo $ready/$total pods ready
+    if [ $total -ne $ready ]
+    then
+        list_not_ready_runninng_pods
+    fi
 done
