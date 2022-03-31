@@ -131,9 +131,14 @@ jobs:
         uses: mxschmitt/action-tmate@v3
 
       - name: deploy services
-        working-directory: fulfillment-integration-tests
+        working-directory: fulfillment-integration
         run: |
-          bash ./manage_services.sh ../fulfillment-integration/deployments apply
+          export KUBECONFIG=../fulfillment-integration-tests/kubeconfig.yaml
+          kubectl create namespace fulfillment
+          kubectl create namespace job-management
+          kubectl apply -f deployments/default
+          kubectl apply -f deployments/fulfillment -n fulfillment
+          kubectl apply -f deployments/job-management -n job-management
           bash ./wait_for_pods_ready.sh 5
 
       - name: wait for build image to succeed
