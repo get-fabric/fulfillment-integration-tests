@@ -84,12 +84,6 @@ jobs:
         with:
           version: latest
 
-      # - name: install node
-      #   run: |
-      #     sudo apt update -y
-      #     sudo apt install nodejs -y
-      #     node -v
-
       - name: 'gcloud auth login'
         uses: 'google-github-actions/auth@v0'
         with:
