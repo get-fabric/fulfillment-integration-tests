@@ -133,7 +133,6 @@ jobs:
       - name: deploy services
         working-directory: fulfillment-integration-tests
         run: |
-          export KUBECONFIG=./kubeconfig.yaml
           bash ./manage_services.sh ../fulfillment-integration/deployments apply
           bash ./wait_for_pods_ready.sh 5
 
@@ -163,9 +162,8 @@ jobs:
 
       - name: deploy
         run: |
-          export KUBECONFIG=./fulfillment-integration-tests/kubeconfig.yaml
-          kubectl delete -n ${{ inputs.namespace }} -f ${{ inputs.service_name }}/deployment/${{ inputs.service_name }}.yaml --grace-period=0 --ignore-not-found=true
-          kubectl apply -n ${{ inputs.namespace }} -f ${{ inputs.service_name }}/deployment/${{ inputs.service_name }}.yaml
+          kubectl --kubeconfig ./fulfillment-integration-tests/kubeconfig.yaml delete -n ${{ inputs.namespace }} -f ${{ inputs.service_name }}/deployment/${{ inputs.service_name }}.yaml --grace-period=0 --ignore-not-found=true
+          kubectl --kubeconfig ./fulfillment-integration-tests/kubeconfig.yaml apply -n ${{ inputs.namespace }} -f ${{ inputs.service_name }}/deployment/${{ inputs.service_name }}.yaml
           sleep 5
           bash ./fulfillment-integration-tests/wait_for_pods_ready.sh 5
 
