@@ -18,14 +18,14 @@ iterate_folder() {
     namespace=${tokens[0]};
     service=${tokens[1]};
 
-    if (! kubectl get namespaces | grep -q $namespace)
+    if (! kubectl --kubeconfig ./kubeconfig.yaml get namespaces | grep -q $namespace)
     then
       #echo "Running - kubectl create namespace $namespace"
-      kubectl create namespace $namespace
+      kubectl --kubeconfig ./kubeconfig.yaml create namespace $namespace
     fi
 
     #echo "Running - kubectl $kubectlCommand -n $namespace -f ./$namespace/$service"
-    kubectl $kubectlCommand -n $namespace -f ./$namespace/$service
+    kubectl --kubeconfig ./kubeconfig.yaml $kubectlCommand -n $namespace -f ./$namespace/$service
 
   done
 }
