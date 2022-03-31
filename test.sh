@@ -3,7 +3,6 @@ test_runner_endpoint=$2
 kubeconigPath=${3:-~/.kube/config}
 
 kubectl --kubeconfig $kubeconigPath -n fulfillment port-forward svc/$test_runner_service_name 3478:80 &
-echo "waiting after port forward"
 sleep 10
 
 echo "calling test runner $test_runner_endpoint endpoint..."
