@@ -16,5 +16,3 @@ while true
         echo "vcluster ready"
         break
     fi
-
-done
