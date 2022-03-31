@@ -162,7 +162,7 @@ jobs:
 
       - name: deploy
         run: |
-          export KUBECONFIG=./kubeconfig.yaml
+          export KUBECONFIG=./fulfillment-integration-tests/kubeconfig.yaml
           kubectl delete -n ${{ inputs.namespace }} -f ${{ inputs.service_name }}/deployment/${{ inputs.service_name }}.yaml --grace-period=0 --ignore-not-found=true
           kubectl apply -n ${{ inputs.namespace }} -f ${{ inputs.service_name }}/deployment/${{ inputs.service_name }}.yaml
           sleep 5
