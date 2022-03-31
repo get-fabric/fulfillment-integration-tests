@@ -139,7 +139,7 @@ jobs:
           kubectl apply -f deployments/default
           kubectl apply -f deployments/fulfillment -n fulfillment
           kubectl apply -f deployments/job-management -n job-management
-          bash ./wait_for_pods_ready.sh 5
+          bash ./wait_for_pods_ready.sh 5 $KUBECONFIG
 
       - name: wait for build image to succeed
         uses: fountainhead/action-wait-for-check@v1.0.0
