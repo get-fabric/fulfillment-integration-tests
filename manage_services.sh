@@ -2,6 +2,7 @@
 
 servicesFolder=$1
 kubectlCommand=$2
+kubeconigPath=${2:-~/.kube/config}
 if [ -z "$2" ]; then
     echo "Usage: manage_services <folder> <'apply'|'delete'>"
     exit 1
@@ -18,10 +19,10 @@ iterate_folder() {
     namespace=${tokens[0]};
     service=${tokens[1]};
 
-    if (! kubectl --kubeconfig ./kubeconfig.yaml get namespaces | grep -q $namespace)
+    if (! kubectl --kubeconfig $kubeconigPath get namespaces | grep -q $namespace)
     then
       #echo "Running - kubectl create namespace $namespace"
-      kubectl --kubeconfig ./kubeconfig.yaml create namespace $namespace
+      kubectl --kubeconfig $kubeconigPath create namespace $namespace
     fi
 
     #echo "Running - kubectl $kubectlCommand -n $namespace -f ./$namespace/$service"
