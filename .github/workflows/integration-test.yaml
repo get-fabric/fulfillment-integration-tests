@@ -127,8 +127,8 @@ jobs:
           vcluster connect vcluster-1 -n $cluster_name &
           sleep 5
 
-      - name: debug
-        uses: mxschmitt/action-tmate@v3
+      # - name: debug
+      #   uses: mxschmitt/action-tmate@v3
 
       - name: deploy services
         working-directory: fulfillment-integration
