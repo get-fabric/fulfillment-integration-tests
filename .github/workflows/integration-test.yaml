@@ -110,6 +110,7 @@ jobs:
         with:
           path: fulfillment-integration-tests
           repository: get-fabric/fulfillment-integration-tests
+          ref: vcluster
           token: ${{ secrets.git_token }}
 
       # - name: debug
