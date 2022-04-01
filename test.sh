@@ -6,8 +6,9 @@ kubectl --kubeconfig $kubeconigPath -n fulfillment port-forward svc/$test_runner
 sleep 10
 
 echo "calling test runner $test_runner_endpoint endpoint..."
-status_code=$(curl --max-time 120 --verbose -LI http://localhost:3478/$test_runner_endpoint -o /dev/null -w '%{http_code}\n' -s)
+IFS=$'\n' read -d "" body status_code  < <(curl --max-time 120 -s -w "\n%{http_code}\n" "http://localhost:3478/sanity")
 echo "test runner result: $status_code"
+echo "traceId: $body"
 
 if [[ "$status_code" == "200" ]]
     then echo "success"
