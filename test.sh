@@ -14,6 +14,5 @@ if [[ "$status_code" == "200" ]]
     then echo "success"
     exit 0
 else
-    echo "failure"
     exit 1
 fi
