@@ -111,7 +111,7 @@ jobs:
           sudo mv vcluster /usr/local/bin;
           vcluster connect vcluster-1 -n integration-tests-1 &
           sleep 5
-          bash ./prepare/run.sh ../integration-environment/deployments
+          bash ./prepare/run.sh ../integration-environment/deployments ./kubeconfig.yaml
 
       - name: deploy services
         working-directory: integration-environment
