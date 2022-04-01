@@ -18,31 +18,3 @@ Every participating service should be added to the [fulfillment-integration](htt
       gcloud_token: ${{ secrets.FULFILLMENMT_INTEGRATION_GCLOUD_SERVICE_ACCOUNT }}
       slack_token: ${{ secrets.FULFILLMENT_INTEGRATION_TESTS_SLACK_BOT_TOKEN }}
 ```
-
-### Adding services
-
-Each fulfillment service should update the deployments folder with its spec. The spec is auto-generated and pushed by the [update-fulfillment-integration](https://github.com/get-fabric/update-fulfillment-integration) GitHub action.
-
-To add a service to the deployments folder add a file named `update-fulfillment-integration.yaml` to your github workflows:
-```
-name: update-fulfillment-integration
-
-on:
-  push:
-    paths:
-      - 'deployment/**'
-    branches: [main]
-
-  workflow_dispatch:
-
-jobs:
-  update-fulfillment-integration:
-    uses: get-fabric/update-fulfillment-integration/.github/workflows/update-fulfillment-integration.yml@main
-    with:
-      service_name: ${{ github.event.repository.name }}
-    secrets:
-      git_token: ${{ secrets.ORG_GITHUB_ADMIN_TOKEN }}
-
-```
-
-Full example of `deploy.yaml` can be found in the [worker-template](https://github.com/get-fabric/worker-template/blob/main/.github/workflows/deploy.yml).
