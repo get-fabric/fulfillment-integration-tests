@@ -88,11 +88,11 @@ jobs:
       - name: install gcloud cli
         uses: google-github-actions/setup-gcloud@v0.3.0
 
-      - name: clone fulfillment-integration repository
+      - name: clone integration-environment repository
         uses: actions/checkout@v2
         with:
-          path: fulfillment-integration
-          repository: get-fabric/fulfillment-integration
+          path: integration-environment
+          repository: get-fabric/integration-environment
           token: ${{ secrets.git_token }}
 
       - name: clone fulfillment-integration-tests repository
@@ -111,10 +111,10 @@ jobs:
           sudo mv vcluster /usr/local/bin;
           vcluster connect vcluster-1 -n integration-tests-1 &
           sleep 5
-          bash ./prepare/run.sh ../fulfillment-integration/deployments
+          bash ./prepare/run.sh ../integration-environment/deployments
 
       - name: deploy services
-        working-directory: fulfillment-integration
+        working-directory: integration-environment
         run: |
           export KUBECONFIG=../fulfillment-integration-tests/kubeconfig.yaml
           kubectl create namespace fulfillment || true
@@ -164,8 +164,8 @@ jobs:
         if: always()
         run: |
           kubectl --kubeconfig ./fulfillment-integration-tests/kubeconfig.yaml delete -n ${{ inputs.namespace }} -f ${{ inputs.service_name }}/deployment/${{ inputs.service_name }}.yaml --grace-period=0 --all=true
-          kubectl --kubeconfig ./fulfillment-integration-tests/kubeconfig.yaml delete -f ./fulfillment-integration/deployments/default/mongo.yaml --grace-period=0 --all=true || true
-          kubectl --kubeconfig ./fulfillment-integration-tests/kubeconfig.yaml apply -f ./fulfillment-integration/deployments/default/mongo.yaml
+          kubectl --kubeconfig ./fulfillment-integration-tests/kubeconfig.yaml delete -f ./integration-environment/deployments/default/mongo.yaml --grace-period=0 --all=true || true
+          kubectl --kubeconfig ./fulfillment-integration-tests/kubeconfig.yaml apply -f ./integration-environment/deployments/default/mongo.yaml
           bash ./fulfillment-integration-tests/wait_for_pods_ready.sh 5 $KUBECONFIG
 
       - name: calculate exeuction time
