@@ -7,7 +7,7 @@ sleep 10
 
 echo "calling test runner $test_runner_endpoint endpoint..."
 IFS=$'\n' read -d "" body status_code  < <(curl --max-time 120 -s -w "\n%{http_code}\n" "http://localhost:3478/sanity")
-echo "test runner result: $status_code"
+echo "test runner status code: $status_code"
 echo "traceId: $body"
 
 if [[ "$status_code" == "200" ]]
