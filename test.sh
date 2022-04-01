@@ -11,7 +11,6 @@ echo "test runner result: $status_code"
 echo "traceId: $body"
 
 if [[ "$status_code" == "200" ]]
-    then echo "success"
     exit 0
 else
     exit 1
