@@ -27,6 +27,7 @@ Every participating service should be added to the [fulfillment-integration](htt
 
 ## FAQ
 **Question:** My test run failed, how to a understand why?
+
 **Answer:**
 If a test run failed, look for the `traceId` of the integration test runner (see [this run](https://github.com/get-fabric/insert-totes/runs/5786078519?check_suite_focus=true#step:14:19) for an example) 
 Once you have your traceId you can use it in [LogDNA](c4c0974e-0d75-4ba8-9d69-25d42b13f22f) for further research
