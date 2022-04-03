@@ -5,7 +5,7 @@ The integration environments are deployed as a [vclusters](https://www.vcluster.
 ### Usage
 Every participating service should be added to the [integration-environment](https://github.com/get-fabric/integration-environment) repository. Then, in order to run the test you just run the [integration-test](https://github.com/get-fabric/fulfillment-integration-tests/blob/main/.github/workflows/integration-test.yaml) workflow
 
-1. Make sure the service is [added to the integration environmen repository]((https://github.com/get-fabric/update-integration-environment)).
+1. Make sure the service is [added to the integration environmen repository](https://github.com/get-fabric/update-integration-environment).
 
 2. Copy this `integration-test` step into your service `integration-test.yaml` workflow:
 ```
