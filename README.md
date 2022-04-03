@@ -21,11 +21,6 @@ Every participating service should be added to the [integration-environment](htt
       slack_token: ${{ secrets.FULFILLMENT_INTEGRATION_TESTS_SLACK_BOT_TOKEN }}
 ```
 
-### Adding New Integration Environments
-1. Follow the guide in [integration-environment](https://github.com/get-fabric/integration-environment) in order to create a new vcluster. Make sure you are naming the cluster correctly (i.e if there's a integration-tests-1 then you should add integration-tests-2)
-
-2. Define a self hosted GitHub runner that will run only on this vcluster
-
 ## FAQ
 **Question:** My test run failed, how to a understand why?
 
@@ -33,3 +28,8 @@ Every participating service should be added to the [integration-environment](htt
 If a test run failed, look for the `traceId` of the integration test runner (see [this run](https://github.com/get-fabric/insert-totes/runs/5786078519?check_suite_focus=true#step:14:19) for an example)
 Once you have your traceId you can use it in [LogDNA](c4c0974e-0d75-4ba8-9d69-25d42b13f22f) for further research
 Notice that also successfull runs will have traceId
+
+## Adding New Integration Environments
+1. Follow the guide in [integration-environment](https://github.com/get-fabric/integration-environment) in order to create a new vcluster. Make sure you are naming the cluster correctly (i.e if there's a integration-tests-1 then you should add integration-tests-2)
+
+2. Define a self hosted GitHub runner that will run only on this vcluster
