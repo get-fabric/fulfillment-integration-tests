@@ -152,8 +152,6 @@ jobs:
           export KUBECONFIG=./fulfillment-integration-tests/kubeconfig.yaml
           kubectl --kubeconfig $KUBECONFIG delete -n ${{ inputs.namespace }} -f ${{ inputs.service_name }}/deployment/${{ inputs.service_name }}.yaml --grace-period=0 --ignore-not-found=true
           kubectl --kubeconfig $KUBECONFIG apply -n ${{ inputs.namespace }} -f ${{ inputs.service_name }}/deployment/${{ inputs.service_name }}.yaml
-          kubectl --kubeconfig $KUBECONFIG delete -f ./integration-environment/deployments/default/mongo.yaml --grace-period=0 --all=true || true
-          kubectl --kubeconfig $KUBECONFIG apply -f ./integration-environment/deployments/default/mongo.yaml
           bash ./fulfillment-integration-tests/wait_for_pods_ready.sh 15 $KUBECONFIG
 
       - name: run test
@@ -165,6 +163,9 @@ jobs:
         run: |
           export KUBECONFIG=./fulfillment-integration-tests/kubeconfig.yaml
           kubectl --kubeconfig $KUBECONFIG delete -n ${{ inputs.namespace }} -f ${{ inputs.service_name }}/deployment/${{ inputs.service_name }}.yaml --grace-period=0 --all=true
+          kubectl --kubeconfig $KUBECONFIG delete -f ./integration-environment/deployments/default/mongo.yaml --grace-period=0 --all=true || true
+          kubectl --kubeconfig $KUBECONFIG apply -f ./integration-environment/deployments/default/mongo.yaml
+          bash ./fulfillment-integration-tests/wait_for_pods_ready.sh 15 $KUBECONFIG
 
       - name: calculate exeuction time
         id: exexution_time
