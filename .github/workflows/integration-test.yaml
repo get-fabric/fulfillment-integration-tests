@@ -75,140 +75,136 @@ jobs:
         id: start_time
         run: echo "::set-output name=time::$(date +%s)"
 
-      # - name: install helm
-      #   uses: azure/setup-helm@v1
-      #   with:
-      #     version: latest
+      - name: install helm
+        uses: azure/setup-helm@v1
+        with:
+          version: latest
 
-      # - name: 'gcloud auth login'
-      #   uses: 'google-github-actions/auth@v0'
-      #   with:
-      #     credentials_json: '${{ secrets.gcloud_token }}'
+      - name: 'gcloud auth login'
+        uses: 'google-github-actions/auth@v0'
+        with:
+          credentials_json: '${{ secrets.gcloud_token }}'
 
-      # - name: install gcloud cli
-      #   uses: google-github-actions/setup-gcloud@v0.3.0
+      - name: install gcloud cli
+        uses: google-github-actions/setup-gcloud@v0.3.0
 
-      # - name: clone integration-environment repository
-      #   uses: actions/checkout@v2
-      #   with:
-      #     path: integration-environment
-      #     repository: get-fabric/integration-environment
-      #     token: ${{ secrets.git_token }}
+      - name: clone integration-environment repository
+        uses: actions/checkout@v2
+        with:
+          path: integration-environment
+          repository: get-fabric/integration-environment
+          token: ${{ secrets.git_token }}
 
-      # - name: clone fulfillment-integration-tests repository
-      #   uses: actions/checkout@v2
-      #   with:
-      #     path: fulfillment-integration-tests
-      #     repository: get-fabric/fulfillment-integration-tests
-      #     token: ${{ secrets.git_token }}
+      - name: clone fulfillment-integration-tests repository
+        uses: actions/checkout@v2
+        with:
+          path: fulfillment-integration-tests
+          repository: get-fabric/fulfillment-integration-tests
+          token: ${{ secrets.git_token }}
 
-      # - name: prepare cluster
-      #   working-directory: fulfillment-integration-tests
-      #   run: |
-      #     gcloud container clusters get-credentials integration --region us-east4 --project fabric-global-test
-      #     curl -s -L "https://github.com/loft-sh/vcluster/releases/latest" | sed -nE 's!.*"([^"]*vcluster-linux-amd64)".*!https://github.com\1!p' | xargs -n 1 curl -L -o vcluster && chmod +x vcluster;
-      #     sudo mv vcluster /usr/local/bin;
-      #     vcluster connect vcluster-1 -n integration-tests-1 &
-      #     sleep 5
-      #     bash ./prepare/run.sh ../integration-environment/deployments ./kubeconfig.yaml
+      - name: prepare cluster
+        working-directory: fulfillment-integration-tests
+        run: |
+          gcloud container clusters get-credentials integration --region us-east4 --project fabric-global-test
+          curl -s -L "https://github.com/loft-sh/vcluster/releases/latest" | sed -nE 's!.*"([^"]*vcluster-linux-amd64)".*!https://github.com\1!p' | xargs -n 1 curl -L -o vcluster && chmod +x vcluster;
+          sudo mv vcluster /usr/local/bin;
+          vcluster connect vcluster-1 -n integration-tests-1 &
+          sleep 5
+          bash ./prepare/run.sh ../integration-environment/deployments ./kubeconfig.yaml
 
-      # - name: deploy services
-      #   working-directory: integration-environment
-      #   run: |
-      #     export KUBECONFIG=../fulfillment-integration-tests/kubeconfig.yaml
-      #     kubectl create namespace fulfillment || true
-      #     kubectl create namespace job-management || true
-      #     kubectl apply -f deployments/default
-      #     kubectl apply -f deployments/fulfillment -n fulfillment
-      #     kubectl apply -f deployments/job-management -n job-management
-      #     bash ../fulfillment-integration-tests/wait_for_pods_ready.sh 5 $KUBECONFIG
+      - name: deploy services
+        working-directory: integration-environment
+        run: |
+          export KUBECONFIG=../fulfillment-integration-tests/kubeconfig.yaml
+          kubectl create namespace fulfillment || true
+          kubectl create namespace job-management || true
+          kubectl apply -f deployments/default
+          kubectl apply -f deployments/fulfillment -n fulfillment
+          kubectl apply -f deployments/job-management -n job-management
+          bash ../fulfillment-integration-tests/wait_for_pods_ready.sh 5 $KUBECONFIG
 
-      # - name: wait for build image to succeed
-      #   uses: fountainhead/action-wait-for-check@v1.0.0
-      #   id: wait-for-build
-      #   with:
-      #     token: ${{ secrets.git_token }}
-      #     checkName: integration-test / build-image
-      #     intervalSeconds: 1
-      #     ref: ${{ github.event.pull_request.head.sha || github.sha }}
-      #     timeoutSeconds: 120
+      - name: wait for build image to succeed
+        uses: fountainhead/action-wait-for-check@v1.0.0
+        id: wait-for-build
+        with:
+          token: ${{ secrets.git_token }}
+          checkName: integration-test / build-image
+          intervalSeconds: 1
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          timeoutSeconds: 120
 
-      # - name: clone repository
-      #   uses: actions/checkout@v2
-      #   with:
-      #     path: ${{ inputs.service_name }}
-      #     repository: get-fabric/${{ inputs.service_name }}
-      #     ref: ${{ inputs.branch }}
-      #     token: ${{ secrets.git_token }}
+      - name: clone repository
+        uses: actions/checkout@v2
+        with:
+          path: ${{ inputs.service_name }}
+          repository: get-fabric/${{ inputs.service_name }}
+          ref: ${{ inputs.branch }}
+          token: ${{ secrets.git_token }}
 
-      # - name: generate yaml
-      #   run: |
-      #     cd ${{ inputs.service_name }}/deployment
-      #     helm dep update
-      #     helm template -f values.yaml -f values.integration.yaml --name-template=${{ inputs.service_name }} --set fabric-chart.image.tag="${{ github.event.pull_request.head.sha || github.sha }}" --set fabric-chart.image.pullPolicy="Always" . > ${{ inputs.service_name }}.yaml
+      - name: generate yaml
+        run: |
+          cd ${{ inputs.service_name }}/deployment
+          helm dep update
+          helm template -f values.yaml -f values.integration.yaml --name-template=${{ inputs.service_name }} --set fabric-chart.image.tag="${{ github.event.pull_request.head.sha || github.sha }}" --set fabric-chart.image.pullPolicy="Always" . > ${{ inputs.service_name }}.yaml
 
-      # - name: deploy
-      #   run: |
-      #     export KUBECONFIG=./fulfillment-integration-tests/kubeconfig.yaml
-      #     kubectl --kubeconfig $KUBECONFIG delete -n ${{ inputs.namespace }} -f ${{ inputs.service_name }}/deployment/${{ inputs.service_name }}.yaml --grace-period=0 --ignore-not-found=true
-      #     kubectl --kubeconfig $KUBECONFIG apply -n ${{ inputs.namespace }} -f ${{ inputs.service_name }}/deployment/${{ inputs.service_name }}.yaml
-      #     kubectl --kubeconfig $KUBECONFIG delete -f ./integration-environment/deployments/default/mongo.yaml --grace-period=0 --ignore-not-found=true
-      #     sleep 5
-      #     kubectl --kubeconfig $KUBECONFIG apply -f ./integration-environment/deployments/default/mongo.yaml
-      #     bash ./fulfillment-integration-tests/wait_for_pods_ready.sh 5 $KUBECONFIG
+      - name: deploy
+        run: |
+          export KUBECONFIG=./fulfillment-integration-tests/kubeconfig.yaml
+          kubectl --kubeconfig $KUBECONFIG delete -n ${{ inputs.namespace }} -f ${{ inputs.service_name }}/deployment/${{ inputs.service_name }}.yaml --grace-period=0 --ignore-not-found=true
+          kubectl --kubeconfig $KUBECONFIG apply -n ${{ inputs.namespace }} -f ${{ inputs.service_name }}/deployment/${{ inputs.service_name }}.yaml
 
-      # - name: run test
-      #   working-directory: fulfillment-integration-tests
-      #   run: bash ./test.sh ${{ inputs.test_runner_service_name }} ${{ inputs.test_runner_endpoint }} ./kubeconfig.yaml
+      - name: run test
+        working-directory: fulfillment-integration-tests
+        run: bash ./test.sh ${{ inputs.test_runner_service_name }} ${{ inputs.test_runner_endpoint }} ./kubeconfig.yaml
 
-      # - name: cleanup
-      #   if: always()
-      #   run: |
-      #     export KUBECONFIG=./fulfillment-integration-tests/kubeconfig.yaml
-      #     kubectl --kubeconfig $KUBECONFIG delete -n ${{ inputs.namespace }} -f ${{ inputs.service_name }}/deployment/${{ inputs.service_name }}.yaml --grace-period=0 --all=true
+      - name: cleanup
+        if: always()
+        run: |
+          export KUBECONFIG=./fulfillment-integration-tests/kubeconfig.yaml
+          kubectl --kubeconfig $KUBECONFIG delete -n ${{ inputs.namespace }} -f ${{ inputs.service_name }}/deployment/${{ inputs.service_name }}.yaml --grace-period=0 --all=true
 
-      # - name: calculate exeuction time
-      #   id: exexution_time
-      #   if: always()
-      #   run: |
-      #     startTime=${{ steps.start_time.outputs.time }}
-      #     currentTime=$(date +%s)
-      #     executionTimeSeconds=$((currentTime-startTime))
-      #     ((sec=executionTimeSeconds%60, executionTimeSeconds/=60, min=executionTimeSeconds%60))
-      #     executionTime=$(printf "%02d:%02d" $min $sec)
-      #     echo "::set-output name=time::$executionTime"
+      - name: calculate exeuction time
+        id: exexution_time
+        if: always()
+        run: |
+          startTime=${{ steps.start_time.outputs.time }}
+          currentTime=$(date +%s)
+          executionTimeSeconds=$((currentTime-startTime))
+          ((sec=executionTimeSeconds%60, executionTimeSeconds/=60, min=executionTimeSeconds%60))
+          executionTime=$(printf "%02d:%02d" $min $sec)
+          echo "::set-output name=time::$executionTime"
 
-      # - name: report cancelled
-      #   if: cancelled()
-      #   uses: actions-ecosystem/action-slack-notifier@v1
-      #   with:
-      #     slack_token: ${{ secrets.slack_token }}
-      #     message: |
-      #       ${{ inputs.test_runner_endpoint }} integration test was cancelled after ${{ steps.exexution_time.outputs.time }} minutes
-      #     color: yellow
-      #     channel: fulfillment-integration-tests-monitoring
-      #     verbose: true
+      - name: report cancelled
+        if: cancelled()
+        uses: actions-ecosystem/action-slack-notifier@v1
+        with:
+          slack_token: ${{ secrets.slack_token }}
+          message: |
+            ${{ inputs.test_runner_endpoint }} integration test was cancelled after ${{ steps.exexution_time.outputs.time }} minutes
+          color: yellow
+          channel: fulfillment-integration-tests-monitoring
+          verbose: true
 
-      # - name: report failure
-      #   if: failure()
-      #   continue-on-error: true
-      #   uses: actions-ecosystem/action-slack-notifier@v1
-      #   with:
-      #     slack_token: ${{ secrets.slack_token }}
-      #     message: |
-      #       ${{ inputs.test_runner_endpoint }} integration test failed after ${{ steps.exexution_time.outputs.time }} minutes
-      #     color: red
-      #     channel: fulfillment-integration-tests-monitoring
-      #     verbose: true
+      - name: report failure
+        if: failure()
+        continue-on-error: true
+        uses: actions-ecosystem/action-slack-notifier@v1
+        with:
+          slack_token: ${{ secrets.slack_token }}
+          message: |
+            ${{ inputs.test_runner_endpoint }} integration test failed after ${{ steps.exexution_time.outputs.time }} minutes
+          color: red
+          channel: fulfillment-integration-tests-monitoring
+          verbose: true
 
-      # - name: report success
-      #   if: success()
-      #   continue-on-error: true
-      #   uses: actions-ecosystem/action-slack-notifier@v1
-      #   with:
-      #     slack_token: ${{ secrets.slack_token }}
-      #     message: |
-      #       ${{ inputs.test_runner_endpoint }} integration test succeeded after ${{ steps.exexution_time.outputs.time }} minutes
-      #     color: green
-      #     channel: fulfillment-integration-tests-monitoring
-      #     verbose: true
+      - name: report success
+        if: success()
+        continue-on-error: true
+        uses: actions-ecosystem/action-slack-notifier@v1
+        with:
+          slack_token: ${{ secrets.slack_token }}
+          message: |
+            ${{ inputs.test_runner_endpoint }} integration test succeeded after ${{ steps.exexution_time.outputs.time }} minutes
+          color: green
+          channel: fulfillment-integration-tests-monitoring
+          verbose: true
