@@ -112,7 +112,7 @@ jobs:
           cluster_name=integration-tests-$(date +%s)
           echo "::set-output name=cluster_name::$cluster_name"
           vcluster create $cluster_name --namespace vcluster
-          sleep 60
+          bash ./wait_for_pods.sh vcluster "Running|ContainerCreating|Pending" 1 $KUBECONFIG
           vcluster connect $cluster_name -n vcluster &
           sleep 5
 
@@ -123,10 +123,11 @@ jobs:
           kubectl create namespace fulfillment || true
           kubectl create namespace job-management || true
           kubectl apply -f deployments/default
-          bash ../fulfillment-integration-tests/wait_for_pods.sh "Running|ContainerCreating|Pending" 1 $KUBECONFIG
+          bash ../fulfillment-integration-tests/wait_for_pods.sh default "Running|ContainerCreating|Pending" 1 $KUBECONFIG
           kubectl apply -f deployments/fulfillment -n fulfillment
           kubectl apply -f deployments/job-management -n job-management
-          bash ../fulfillment-integration-tests/wait_for_pods.sh "Running|ContainerCreating|Pending" 1 $KUBECONFIG
+          bash ../fulfillment-integration-tests/wait_for_pods.sh fulfillment "Running|ContainerCreating|Pending" 1 $KUBECONFIG
+          bash ../fulfillment-integration-tests/wait_for_pods.sh job-management "Running|ContainerCreating|Pending" 1 $KUBECONFIG
 
       - name: wait for build image to succeed
         uses: fountainhead/action-wait-for-check@v1.0.0
@@ -157,7 +158,7 @@ jobs:
           export KUBECONFIG=./fulfillment-integration-tests/kubeconfig.yaml
           kubectl --kubeconfig $KUBECONFIG delete -n ${{ inputs.namespace }} -f ${{ inputs.service_name }}/deployment/${{ inputs.service_name }}.yaml --grace-period=0 --ignore-not-found=true
           kubectl --kubeconfig $KUBECONFIG apply -n ${{ inputs.namespace }} -f ${{ inputs.service_name }}/deployment/${{ inputs.service_name }}.yaml
-          bash ./fulfillment-integration-tests/wait_for_pods.sh "Running|ContainerCreating|Pending" 1 $KUBECONFIG
+          bash ./fulfillment-integration-tests/wait_for_pods.sh ${{ inputs.namespace }} "Running|ContainerCreating|Pending" 1 $KUBECONFIG
 
       - name: run test
         working-directory: fulfillment-integration-tests
