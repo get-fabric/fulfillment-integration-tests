@@ -102,7 +102,7 @@ jobs:
           repository: get-fabric/fulfillment-integration-tests
           token: ${{ secrets.git_token }}
 
-      - name: vcluster connect
+      - name: create vcluster
         working-directory: fulfillment-integration-tests
         run: |
           gcloud container clusters get-credentials integration --region us-east4 --project fabric-global-test
