@@ -103,14 +103,17 @@ jobs:
           token: ${{ secrets.git_token }}
 
       - name: create vcluster
+        id: create_vcluster
         working-directory: fulfillment-integration-tests
         run: |
           gcloud container clusters get-credentials integration --region us-east4 --project fabric-global-test
           curl -s -L "https://github.com/loft-sh/vcluster/releases/latest" | sed -nE 's!.*"([^"]*vcluster-linux-amd64)".*!https://github.com\1!p' | xargs -n 1 curl -L -o vcluster && chmod +x vcluster;
           sudo mv vcluster /usr/local/bin;
-          vcluster create integration-tests-2 --namespace vcluster
+          cluster_name=integration-tests-$(date +%s)
+          echo "::set-output name=cluster_name::$cluster_name"
+          vcluster create $cluster_name --namespace vcluster
           sleep 60
-          vcluster connect integration-tests-2 -n vcluster &
+          vcluster connect $cluster_name -n vcluster &
           sleep 5
 
       - name: deploy services
@@ -162,7 +165,7 @@ jobs:
 
       - name: cleanup
         if: always()
-        run: vcluster delete integration-tests-2 --namespace vcluster
+        run: vcluster delete ${{steps.create_vcluster.outputs.cluster_name}} --namespace vcluster
 
       - name: calculate exeuction time
         id: exexution_time
