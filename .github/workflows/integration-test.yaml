@@ -108,7 +108,9 @@ jobs:
           gcloud container clusters get-credentials integration --region us-east4 --project fabric-global-test
           curl -s -L "https://github.com/loft-sh/vcluster/releases/latest" | sed -nE 's!.*"([^"]*vcluster-linux-amd64)".*!https://github.com\1!p' | xargs -n 1 curl -L -o vcluster && chmod +x vcluster;
           sudo mv vcluster /usr/local/bin;
-          vcluster connect vcluster-1 -n integration-tests-1 &
+          vcluster create integration-tests-2 --namespace vcluster
+          sleep 120
+          vcluster connect vcluster-1 -n integration-tests-2 &
           sleep 5
 
       - name: deploy services
@@ -160,12 +162,7 @@ jobs:
 
       - name: cleanup
         if: always()
-        run: |
-          export KUBECONFIG=./fulfillment-integration-tests/kubeconfig.yaml
-          kubectl delete -f ./integration-environment/deployments/default --ignore-not-found=true
-          kubectl delete -f ./integration-environment/deployments/fulfillment -n fulfillment --ignore-not-found=true
-          kubectl delete -f ./integration-environment/deployments/job-management -n job-management --ignore-not-found=true
-          bash ./fulfillment-integration-tests/wait_for_pods.sh "Terminating" 1 $KUBECONFIG
+        run: vcluster delete integration-tests-2 --namespace vcluster
 
       - name: calculate exeuction time
         id: exexution_time
