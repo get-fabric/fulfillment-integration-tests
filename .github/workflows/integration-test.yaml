@@ -156,18 +156,18 @@ jobs:
           kubectl --kubeconfig $KUBECONFIG apply -n ${{ inputs.namespace }} -f ${{ inputs.service_name }}/deployment/${{ inputs.service_name }}.yaml
           bash ./fulfillment-integration-tests/wait_for_pods_ready.sh 1 $KUBECONFIG
 
-      - name: run test
-        uses: nick-fields/retry@v2
-        with:
-          timeout_seconds: 120
-          max_attempts: 3
-          retry_on: error
-          command: bash ./fulfillment-integration-tests/test.sh ${{ inputs.test_runner_service_name }} ${{ inputs.test_runner_endpoint }} ./fulfillment-integration-tests/kubeconfig.yaml
-
-
       # - name: run test
-      #   working-directory: fulfillment-integration-tests
-      #   run: bash ./test.sh ${{ inputs.test_runner_service_name }} ${{ inputs.test_runner_endpoint }} ./kubeconfig.yaml
+      #   uses: nick-fields/retry@v2
+      #   with:
+      #     timeout_seconds: 120
+      #     max_attempts: 3
+      #     retry_on: error
+      #     command: bash ./fulfillment-integration-tests/test.sh ${{ inputs.test_runner_service_name }} ${{ inputs.test_runner_endpoint }} ./fulfillment-integration-tests/kubeconfig.yaml
+
+
+      - name: run test
+        working-directory: fulfillment-integration-tests
+        run: bash ./test.sh ${{ inputs.test_runner_service_name }} ${{ inputs.test_runner_endpoint }} ./kubeconfig.yaml
 
       - name: cleanup
         if: always()
