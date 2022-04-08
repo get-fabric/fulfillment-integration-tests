@@ -158,11 +158,10 @@ jobs:
       - name: run test
         uses: nick-fields/retry@v2
         with:
-          working-directory: fulfillment-integration-tests
           timeout_seconds: 120
           max_attempts: 3
           retry_on: error
-          command: bash ./test.sh ${{ inputs.test_runner_service_name }} ${{ inputs.test_runner_endpoint }} ./kubeconfig.yaml
+          command: bash ./fulfillment-integration-tests/test.sh ${{ inputs.test_runner_service_name }} ${{ inputs.test_runner_endpoint }} ./kubeconfig.yaml
 
 
       # - name: run test
