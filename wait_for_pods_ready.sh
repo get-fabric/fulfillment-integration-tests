@@ -1,15 +1,15 @@
 #!/bin/sh
 
 get_total_running_pods_count () {
-    echo $((`kubectl --kubeconfig $kubeconigPath get pods --all-namespaces | grep -v "kube-system" | grep "Running" | wc -l` - 1))
+    echo $((`kubectl --kubeconfig $kubeconigPath get pods --all-namespaces | grep -v "kube-system" | grep -E "Running|ContainerCreating" | wc -l` - 1))
 }
 
 get_not_ready_running_pods_count () {
-    echo $((`kubectl --kubeconfig $kubeconigPath get pods --all-namespaces | grep -v "kube-system" | grep "Running" | grep 0/ | wc -l`))
+    echo $((`kubectl --kubeconfig $kubeconigPath get pods --all-namespaces | grep -v "kube-system" | grep "Running|ContainerCreating" | grep 0/ | wc -l`))
 }
 
 list_not_ready_runninng_pods () {
-    kubectl --kubeconfig $kubeconigPath get pods --all-namespaces | grep -v "kube-system" | grep "Running" | grep 0/1
+    kubectl --kubeconfig $kubeconigPath get pods --all-namespaces | grep -v "kube-system" | grep "Running|ContainerCreating" | grep 0/1
 }
 
 sleepSeconds=${1:-5}
