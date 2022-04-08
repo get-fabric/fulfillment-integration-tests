@@ -103,7 +103,7 @@ jobs:
           ref: next
           token: ${{ secrets.git_token }}
 
-      - name: prepare cluster
+      - name: vcluster connect
         working-directory: fulfillment-integration-tests
         run: |
           gcloud container clusters get-credentials integration --region us-east4 --project fabric-global-test
@@ -111,7 +111,6 @@ jobs:
           sudo mv vcluster /usr/local/bin;
           vcluster connect vcluster-1 -n integration-tests-1 &
           sleep 5
-          bash ./prepare/run.sh ../integration-environment/deployments ./kubeconfig.yaml
 
       - name: deploy services
         working-directory: integration-environment
