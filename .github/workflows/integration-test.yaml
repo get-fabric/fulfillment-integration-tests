@@ -100,9 +100,10 @@ jobs:
         with:
           path: fulfillment-integration-tests
           repository: get-fabric/fulfillment-integration-tests
+          ref: next
           token: ${{ secrets.git_token }}
 
-      - name: prepare cluster
+      - name: vcluster connect
         working-directory: fulfillment-integration-tests
         run: |
           gcloud container clusters get-credentials integration --region us-east4 --project fabric-global-test
@@ -110,7 +111,6 @@ jobs:
           sudo mv vcluster /usr/local/bin;
           vcluster connect vcluster-1 -n integration-tests-1 &
           sleep 5
-          bash ./prepare/run.sh ../integration-environment/deployments ./kubeconfig.yaml
 
       - name: deploy services
         working-directory: integration-environment
@@ -119,9 +119,10 @@ jobs:
           kubectl create namespace fulfillment || true
           kubectl create namespace job-management || true
           kubectl apply -f deployments/default
+          bash ../fulfillment-integration-tests/wait_for_pods.sh "Running|ContainerCreating|Pending" 1 $KUBECONFIG
           kubectl apply -f deployments/fulfillment -n fulfillment
           kubectl apply -f deployments/job-management -n job-management
-          bash ../fulfillment-integration-tests/wait_for_pods_ready.sh 15 $KUBECONFIG
+          bash ../fulfillment-integration-tests/wait_for_pods.sh "Running|ContainerCreating|Pending" 1 $KUBECONFIG
 
       - name: wait for build image to succeed
         uses: fountainhead/action-wait-for-check@v1.0.0
@@ -152,7 +153,7 @@ jobs:
           export KUBECONFIG=./fulfillment-integration-tests/kubeconfig.yaml
           kubectl --kubeconfig $KUBECONFIG delete -n ${{ inputs.namespace }} -f ${{ inputs.service_name }}/deployment/${{ inputs.service_name }}.yaml --grace-period=0 --ignore-not-found=true
           kubectl --kubeconfig $KUBECONFIG apply -n ${{ inputs.namespace }} -f ${{ inputs.service_name }}/deployment/${{ inputs.service_name }}.yaml
-          bash ./fulfillment-integration-tests/wait_for_pods_ready.sh 15 $KUBECONFIG
+          bash ./fulfillment-integration-tests/wait_for_pods.sh "Running|ContainerCreating|Pending" 1 $KUBECONFIG
 
       - name: run test
         working-directory: fulfillment-integration-tests
@@ -162,11 +163,10 @@ jobs:
         if: always()
         run: |
           export KUBECONFIG=./fulfillment-integration-tests/kubeconfig.yaml
-          kubectl --kubeconfig $KUBECONFIG delete -n ${{ inputs.namespace }} -f ${{ inputs.service_name }}/deployment/${{ inputs.service_name }}.yaml --grace-period=0 --all=true
-          kubectl --kubeconfig $KUBECONFIG delete -f ./integration-environment/deployments/default/mongo.yaml --grace-period=0 --all=true || true
-          kubectl --kubeconfig $KUBECONFIG apply -f ./integration-environment/deployments/default/mongo.yaml
-          sleep 30
-          bash ./fulfillment-integration-tests/wait_for_pods_ready.sh 15 $KUBECONFIG
+          kubectl delete -f ./integration-environment/deployments/default --ignore-not-found=true
+          kubectl delete -f ./integration-environment/deployments/fulfillment -n fulfillment --ignore-not-found=true
+          kubectl delete -f ./integration-environment/deployments/job-management -n job-management --ignore-not-found=true
+          bash ./fulfillment-integration-tests/wait_for_pods.sh "Terminating" 1 $KUBECONFIG
 
       - name: calculate exeuction time
         id: exexution_time
