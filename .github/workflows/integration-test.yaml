@@ -112,7 +112,7 @@ jobs:
           cluster_name=integration-tests-$(date +%s)
           echo "::set-output name=cluster_name::$cluster_name"
           vcluster create $cluster_name --namespace vcluster
-          bash ./wait_for_pods.sh vcluster "Running|ContainerCreating|Pending" 1 $KUBECONFIG
+          bash ./wait_for_pods.sh vcluster "Running|ContainerCreating|Pending" 1
           vcluster connect $cluster_name -n vcluster &
           sleep 5
 
