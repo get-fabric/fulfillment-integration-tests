@@ -19,7 +19,7 @@ do
     sleep $((sleepSeconds))
 
     total=$(get_total_pods_count)
-    notReady=$(get_not_ready_running_pods_count)
+    notReady=$(get_not_ready_pods_count)
     ready=$(( total - notReady ))
 
     echo $ready/$total pods ready
