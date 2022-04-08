@@ -1,7 +1,7 @@
 #!/bin/sh
 
 get_total_pods_count () {
-    echo $((`kubectl --kubeconfig $kubeconigPath get pods -n $namespace | grep -E $expectedStatus | wc -l` - 1))
+    echo $((`kubectl --kubeconfig $kubeconigPath get pods -n $namespace | grep -E $expectedStatus | wc -l`))
 }
 
 get_not_ready_pods_count () {
