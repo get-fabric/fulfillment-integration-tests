@@ -99,6 +99,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           path: fulfillment-integration-tests
+          ref: next
           repository: get-fabric/fulfillment-integration-tests
           token: ${{ secrets.git_token }}
 
