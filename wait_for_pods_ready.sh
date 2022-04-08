@@ -8,10 +8,6 @@ get_not_ready_running_pods_count () {
     echo $((`kubectl --kubeconfig $kubeconigPath get pods --all-namespaces | grep -v "kube-system" | grep -E "Running|ContainerCreating|Pending" | grep 0/ | wc -l`))
 }
 
-list_not_ready_runninng_pods () {
-    kubectl --kubeconfig $kubeconigPath get pods --all-namespaces | grep -v "kube-system" | grep -E "Running|ContainerCreating|Pending" | grep 0/1
-}
-
 sleepSeconds=${1:-5}
 kubeconigPath=${2:-~/.kube/config}
 
@@ -26,8 +22,4 @@ do
     ready=$(( total - notReady ))
 
     echo $ready/$total pods ready
-    if [ $total -ne $ready ]
-    then
-        list_not_ready_runninng_pods
-    fi
 done
