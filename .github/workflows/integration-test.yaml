@@ -163,9 +163,9 @@ jobs:
         if: always()
         run: |
           export KUBECONFIG=./fulfillment-integration-tests/kubeconfig.yaml
-          kubectl delete -f ./integration-environment/deployments/default --grace-period=0 --ignore-not-found=true
-          kubectl delete -f ./integration-environment/deployments/fulfillment -n fulfillment --grace-period=0 --ignore-not-found=true
-          kubectl delete -f ./integration-environment/deployments/job-management -n job-management --grace-period=0 --ignore-not-found=true
+          kubectl delete -f ./integration-environment/deployments/default --ignore-not-found=true
+          kubectl delete -f ./integration-environment/deployments/fulfillment -n fulfillment --ignore-not-found=true
+          kubectl delete -f ./integration-environment/deployments/job-management -n job-management --ignore-not-found=true
           bash ./fulfillment-integration-tests/wait_for_pods.sh "Terminating" 1 $KUBECONFIG
 
       - name: calculate exeuction time
