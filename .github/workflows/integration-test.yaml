@@ -155,7 +155,8 @@ jobs:
           kubectl --kubeconfig $KUBECONFIG apply -n ${{ inputs.namespace }} -f ${{ inputs.service_name }}/deployment/${{ inputs.service_name }}.yaml
           bash ./fulfillment-integration-tests/wait_for_pods_ready.sh 15 $KUBECONFIG
 
-      - uses: nick-fields/retry@v2
+      - name: run test
+        uses: nick-fields/retry@v2
         with:
           working-directory: fulfillment-integration-tests
           timeout_seconds: 120
