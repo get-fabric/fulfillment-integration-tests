@@ -68,7 +68,7 @@ jobs:
         cache-to: type=gha, scope=${{ github.workflow }}
 
   sanity:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, fulfillment-integration-tests]
     timeout-minutes: 20
     steps:
       - name: setup -> started
