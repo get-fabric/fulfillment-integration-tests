@@ -138,10 +138,9 @@ jobs:
           kubectl --kubeconfig ./kubeconfig.yaml create namespace fulfillment || true
           kubectl --kubeconfig ./kubeconfig.yaml create namespace job-management || true
           kubectl --kubeconfig ./kubeconfig.yaml apply -f ./integration-environment/deployments/default --validate=false || true
-          sleep 60
+          bash ./fulfillment-integration-tests/wait_for_pods.sh default "Running|ContainerCreating|Pending" 1 ./kubeconfig.yaml
           kubectl --kubeconfig ./kubeconfig.yaml apply -f ./integration-environment/deployments/fulfillment -n fulfillment --validate=false || true
           kubectl --kubeconfig ./kubeconfig.yaml apply -f ./integration-environment/deployments/job-management -n job-management --validate=false || true
-          bash ./fulfillment-integration-tests/wait_for_pods.sh default "Running|ContainerCreating|Pending" 1 ./kubeconfig.yaml
           bash ./fulfillment-integration-tests/wait_for_pods.sh fulfillment "Running|ContainerCreating|Pending" 1 ./kubeconfig.yaml
           bash ./fulfillment-integration-tests/wait_for_pods.sh job-management "Running|ContainerCreating|Pending" 1 ./kubeconfig.yaml
           kubectl --kubeconfig ./kubeconfig.yaml get pods -A
