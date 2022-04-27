@@ -119,6 +119,7 @@ jobs:
           cluster_name=integration-tests-$(date +%s)
           echo "::set-output name=cluster_name::$cluster_name"
           vcluster create $cluster_name --namespace vcluster
+          bash ./fulfillment-integration-tests/wait_for_pod_ready.sh $cluster_name-0 vcluster ./kubeconfig.yaml
           sleep 90 # waiting for vcluster to finish initalization
           vcluster connect $cluster_name -n vcluster &
           sleep 10
@@ -139,10 +140,9 @@ jobs:
           kubectl --kubeconfig ./kubeconfig.yaml create namespace fulfillment || true
           kubectl --kubeconfig ./kubeconfig.yaml create namespace job-management || true
           kubectl --kubeconfig ./kubeconfig.yaml apply -f ./integration-environment/deployments/default --validate=false || true
-          bash ./fulfillment-integration-tests/wait_for_pods.sh default "Running|ContainerCreating|Pending" 1 ./kubeconfig.yaml
-          sleep 30
           kubectl --kubeconfig ./kubeconfig.yaml apply -f ./integration-environment/deployments/fulfillment -n fulfillment --validate=false || true
           kubectl --kubeconfig ./kubeconfig.yaml apply -f ./integration-environment/deployments/job-management -n job-management --validate=false || true
+          bash ./fulfillment-integration-tests/wait_for_pods.sh default "Running|ContainerCreating|Pending" 1 ./kubeconfig.yaml
           bash ./fulfillment-integration-tests/wait_for_pods.sh fulfillment "Running|ContainerCreating|Pending" 1 ./kubeconfig.yaml
           bash ./fulfillment-integration-tests/wait_for_pods.sh job-management "Running|ContainerCreating|Pending" 1 ./kubeconfig.yaml
           kubectl --kubeconfig ./kubeconfig.yaml get pods -A
