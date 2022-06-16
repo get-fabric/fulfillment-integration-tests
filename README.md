@@ -37,7 +37,6 @@ The integration tests are running in [fabric-test integration cluster](https://c
 For instancem, if you wantto connect to a `integration-tests-1` vcluster from you machine do:
 ```
 vcluster connect vcluster-1 --namespace integration-tests-1 & 
-export KUBECONFIG=./kubeconfig.yaml
 ```
 Now you can do any `kubectl` operation with the vcluster, i.e:
 ```
