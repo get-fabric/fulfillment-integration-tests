@@ -122,7 +122,6 @@ jobs:
           vcluster connect $cluster_name -n vcluster &
           bash ./fulfillment-integration-tests/wait_for_pod_ready.sh $cluster_name-0 vcluster
 
-
       - name: wait for image build
         uses: fountainhead/action-wait-for-check@v1.0.0
         id: wait-for-build
