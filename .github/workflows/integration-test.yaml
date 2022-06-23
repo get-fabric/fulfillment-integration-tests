@@ -153,7 +153,7 @@ jobs:
         if: always()
         run: |
           kubectl   get pods -A
-          vcluster delete ${{steps.create_vcluster.outputs.cluster_name}} --namespace vcluster
+          vcluster delete ${{steps.create_vcluster.outputs.cluster_name}} --namespace vcluster --auto-delete-namespace=false
 
       - name: teardown -> calculate exeuction time
         id: exexution_time
