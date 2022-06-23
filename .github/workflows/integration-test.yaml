@@ -150,9 +150,9 @@ jobs:
         run: bash ./fulfillment-integration-tests/test.sh ${{ inputs.test_runner_service_name }} ${{ inputs.test_runner_endpoint }} 
 
       - name: cleanup
-        if: always()
+        # if: always()
         run: |
-          kubectl   get pods -A
+          kubectl get pods -A
           vcluster delete ${{steps.create_vcluster.outputs.cluster_name}} --namespace vcluster --auto-delete-namespace=false
 
       - name: teardown -> calculate exeuction time
