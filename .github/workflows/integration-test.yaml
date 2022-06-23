@@ -114,7 +114,7 @@ jobs:
         id: create_vcluster
         run: |
           gcloud container clusters get-credentials integration --region us-east4 --project fabric-global-test
-          curl -s -L "https://github.com/loft-sh/vcluster/releases/v0.10.0" | sed -nE 's!.*"([^"]*vcluster-linux-amd64)".*!https://github.com\1!p' | xargs -n 1 curl -L -o vcluster && chmod +x vcluster;
+          curl -s -L "https://github.com/loft-sh/vcluster/releases/v0.10.1" | sed -nE 's!.*"([^"]*vcluster-linux-amd64)".*!https://github.com\1!p' | xargs -n 1 curl -L -o vcluster && chmod +x vcluster;
           sudo mv vcluster /usr/local/bin;
           cluster_name=integration-tests-$(date +%s)
           echo "::set-output name=cluster_name::$cluster_name"
