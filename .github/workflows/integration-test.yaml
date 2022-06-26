@@ -119,7 +119,7 @@ jobs:
           cluster_name=integration-tests-$(date +%s)
           echo "::set-output name=cluster_name::$cluster_name"
           vcluster create $cluster_name --connect=false
-          bash ./fulfillment-integration-tests/wait_for_pod_ready.sh $cluster_name-0 vcluster
+          bash ./fulfillment-integration-tests/wait_for_pod_ready.sh $cluster_name-0 vcluster-$cluster_name
           vcluster connect $cluster_name -n vcluster &
 
       - name: wait for image build
