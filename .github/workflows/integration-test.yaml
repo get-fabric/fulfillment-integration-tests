@@ -120,7 +120,7 @@ jobs:
           echo "::set-output name=cluster_name::$cluster_name"
           vcluster create $cluster_name --connect=false
           bash ./fulfillment-integration-tests/wait_for_pod_ready.sh $cluster_name-0 vcluster-$cluster_name
-          vcluster connect $cluster_name -n vcluster &
+          vcluster connect $cluster_name &
 
       - name: wait for image build
         uses: fountainhead/action-wait-for-check@v1.0.0
