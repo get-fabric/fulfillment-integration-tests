@@ -1,12 +1,12 @@
 # Troubleshooting
 
 Integration test failures can be divided into two main reasons:
-- The integration environment failed to initialize - the test waits until **all** service pods get to a "ready" state before starting the actual test
+- The integration environment failed to initialize (the test waits until **all** service pods get to a "ready" state before starting the actual test)
 - The integration test(s) itself didn't pass
 
 <br/>
 
-## Detecting the reason
+## Understanding the test failure
 
 Start by opening the failed GitHub workflow.
 
@@ -17,14 +17,14 @@ The environment has failed to initialized if:
 - The "teardown -> report cancelled" step ran
 
 The test itself failed if:
-- The "run test" step failed
+- The "run test" step ran and failed
 - The "teardown -> report failure" step ran
 
 <br/>
 
 ## Integration environment initialization failures
 
-### Detecting the initialization failure cause
+### Finding the initialization failure cause
 
 - In the cancelled GitHub workflow, go to the "cleanup" step output
 - In the list of pods, search for
