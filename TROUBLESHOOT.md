@@ -54,7 +54,7 @@ The pod couldn't start or the k8s cluster **thought** it couldn't and kept resta
 
     **Answer:**
 In the "run test" step output, look for the `traceId` of the integration test runner. Use it to search [LogDNA](https://app.logdna.com/b131d67c61/logs/view) to see the run logs.<br/>
-Note that successfull runs will also have a trace id.
+Note that successful runs will also have a trace id.
 
 <br/>
 
